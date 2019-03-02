@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="3d7aecff-aa84-4406-a2d0-79ec607c389b" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="bannu123" database="odp" />
+	</db:config>
+	<flow name="water-mark-db-testFlow" doc:id="f9f2f9dd-0ecc-4b52-817c-8df6957a09f1" >
+		<scheduler doc:name="Scheduler" doc:id="24def59a-67ca-4a25-b618-59cde77e5cf2" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="60" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<db:select doc:name="Select" doc:id="9ca76bbc-aca8-4db9-8ca6-985490db4f58" config-ref="Database_Config">
+			<db:sql >select * from account</db:sql>
+		</db:select>
+		<foreach doc:name="For Each" doc:id="ae676a34-bff4-4a2c-a2ed-8e6b49bc0e30" >
+			<logger level="INFO" doc:name="Logger" doc:id="843d8870-5c30-4714-ae01-ab8a3b1f70d6" message="# Sch Next Record: #[payload] #"/>
+		</foreach>
+	</flow>
+	<flow name="water-mark-db-testFlow1" doc:id="4d25ac90-ffef-4922-a266-002c650a068e" >
+		<db:listener table="account" doc:name="On Table Row" doc:id="4e100db2-3d94-4147-8a8b-dde851aca41a" config-ref="Database_Config" watermarkColumn="name" idColumn="id">
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" timeUnit="SECONDS" />
+			</scheduling-strategy>
+		</db:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="72bf50a7-1d1b-4af8-9ad4-436110d18962" message="# OTR Next Record: #[payload] #" />
+	</flow>
+</mule>

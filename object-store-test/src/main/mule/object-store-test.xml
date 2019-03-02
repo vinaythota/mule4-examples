@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6ed48b3a-8f2a-46f9-bb93-662e459a79a4" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+
+	<configuration-properties doc:name="Configuration properties" doc:id="dce102d6-cdd4-4cf1-9385-15c250f730bf" file="object-store-test.yaml" />
+	<flow name="object-store-testFlow" doc:id="666f7b54-b366-4fae-a575-8398414e8b13" >
+		<http:listener doc:name="Listener" doc:id="e9fceba5-8488-439d-a3d2-c679cd3be3a5" config-ref="HTTP_Listener_config" path="/os4DefaultWrite" outputMimeType="application/json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2a1bf200-b40d-481f-a115-3dac4c3dbb4a" message="# Received Request for Object Store with Default Option, Payload:  #[payload]"/>
+		
+		<ee:transform doc:name="Transform Message" doc:id="f577583d-5737-4801-8290-e13b434274b9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<os:store key="#[payload.key]">
+			<os:value ><![CDATA[#[payload.value]]]></os:value>
+		</os:store>
+	</flow>
+	
+	<flow name="retrieve-data-flow">
+		<http:listener config-ref="HTTP_Listener_config" path="/os4DefaultRead" />
+		<logger level="INFO" message="## Got a request to receive date from Object Store with Default Option, Payload:  #[payload]"/>
+		<os:retrieve key="#[payload.key]"/>
+		<logger level="INFO" message="# Retrieved Value is: #[payload]"/>
+	</flow>
+</mule>

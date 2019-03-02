@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e2fc1dd1-a37a-4198-b14e-11aeadc834e9" >
+		<http:request-connection host="localhost" port="${http.port}" />
+	</http:request-config>
+	<flow name="scatter-gatherFlow" doc:id="11465c4f-da09-4096-b8bc-cc95ca176007" >
+		<http:listener doc:name="Listener" doc:id="21094fdd-b1d4-4a1a-b645-375e181f1bff" config-ref="HTTP_Listener_config" path="/scatter"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1b932a8a-8d81-4650-b441-f6c4f1b7033a" message="## Received Request to Streaming Test, Payload: #[payload] ##"/>
+		<ee:transform doc:name="set java msg" doc:id="3d20b20e-fa79-4e97-bfe6-d067cae4053b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	message : "allEqual"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="HelloTestVar" doc:name="Set Variable" doc:id="e4d0343a-5472-4690-8987-b67357a27a7e" variableName="testVar"/>
+		<try doc:name="Try" doc:id="db3ed987-27f2-472b-80ea-793189ac2ec1" >
+			<scatter-gather doc:name="Scatter-Gather" doc:id="af503e49-1603-4a0b-b711-b363fedc02a8">
+			<route>
+					<http:request method="GET" doc:name="Request" doc:id="04b305cb-694f-45c6-bf7d-1cce14ba4350" config-ref="HTTP_Request_configuration" path="/test"/>
+					<logger level="INFO" doc:name="Logger" doc:id="a51c9879-b8af-4b97-a2da-8464d222729e" message="## In Leg 1 ##, Payload #[payload]" />
+			</route>
+			<route>
+				<ee:transform doc:name="Transform Message" doc:id="4517ee78-1227-4861-bb45-798c404ecd1d" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"message" : "leg2"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Logger" doc:id="a2380a6e-9d33-4e8f-8bdb-f990734d26e6" message="## In Leg2 ##, Payload: #[payload]" />
+			</route>
+				<route >
+					<set-payload value="#[['This is Scatter Gather Test']]" doc:name="Set Payload" doc:id="e64f3358-8ad2-41cf-a8e2-6fceb5cc203c" />
+					<logger level="INFO" doc:name="Logger" doc:id="d130ca10-519b-4c13-88a8-899df27f14af" message="## In Leg3 ##, Payload: #[payload]"/>
+				</route>
+		</scatter-gather>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bbfc2389-8ca8-41c6-83f3-4cc96b4fa529" >
+					<logger level="INFO" doc:name="Logger" doc:id="4ceb0f96-e10a-4f73-988e-ce81afb41e1d" message="## Exception in scatter gather ##"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="b2364c2f-984b-41dc-a2ea-4f09ec961ab2" message="## Nodes Processed Successfully #"/>
+		<ee:transform doc:name="Transform Message" doc:id="4076fcfb-36c8-4da6-b958-cad6cc994d7f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7646fe1f-d66b-48b9-907b-688a400d449e" message="Aggregated Payload: #[payload]"/>
+	</flow>
+	<flow name="scatter-gatherFlow1" doc:id="e212ff4f-8060-470a-9ea6-d894c7e7f64f" >
+		<http:listener doc:name="Listener" doc:id="339d87e2-d975-4a01-9203-92f52e456a69" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8f92f1da-66de-4516-a16f-a8fc70b8a4e4" message="## Received Request for Test ##"/>
+		<ee:transform doc:name="Transform Message" doc:id="0c9c5771-ce7c-4299-81d8-997ed7a82abc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"id" : 100
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

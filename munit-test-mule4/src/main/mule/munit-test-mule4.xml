@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="12801791-302c-4c31-abfc-0a324d159838" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<flow name="munit-test-mule4Flow" doc:id="dd0b6318-9d6d-49fb-92d2-2d905f711fb7" >
+		<http:listener doc:name="Listener" doc:id="dc2723fe-fb3c-4900-b411-4ff6fae9a6a3" config-ref="HTTP_Listener_config" path="/munit"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e2c88a8e-d6e5-4a50-b897-504dc27da415" message="## Received Request for MUnit flow ##"/>
+		<choice>
+			<when expression="#[payload == 'Option1']">
+				<logger level="INFO" message="Option 1 Called"></logger>
+				<set-payload value="#['Option1']"></set-payload>
+			</when>
+			<otherwise>
+				<logger level="INFO" message="Option 2 called"></logger>
+				<set-payload value="#['Option2']"></set-payload>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

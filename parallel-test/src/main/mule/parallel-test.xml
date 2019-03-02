@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="387c2c29-83b8-4018-8d37-cf3e59325618" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="123b1f3f-d0ed-4cf0-a3df-8b639f46ef0f">
+		<vm:queues >
+			<vm:queue queueName="responseQ" />
+		</vm:queues>
+	</vm:config>
+	<flow name="parallel-testFlow" doc:id="ea50ed8b-64ae-480d-8974-b1d48390394a" >
+		<http:listener doc:name="Listener" doc:id="7a636833-efb5-48dd-817b-be69756c0806" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0911b994-4cf0-41a6-84d5-1d3813bed393" message="Payload: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="27786be9-585e-4d32-a0a6-296da9327551" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload splitBy '\n']]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[sizeOf(payload)]" doc:name="Set Variable" doc:id="ecea3d3a-74b2-4158-b610-3754c5619592" variableName="recordsSize"/>
+		<foreach doc:name="For Each" doc:id="6b807ba6-059e-4bf2-a505-5c932f1b24ba">
+			<async doc:name="Async" doc:id="01709319-cf62-4ff5-b336-013da37f926e" >
+				<flow-ref doc:name="Flow Reference" doc:id="93e83dd0-4365-49c6-891b-fb4e8b216541" name="enrichEachElement" />
+			</async>
+		</foreach>
+		<vm:consume queueName="responseQ" doc:name="Consume" doc:id="999a60d5-8e13-43db-930e-30442b9f0ed1" config-ref="VM_Config" timeout="1000"/>
+		<ee:transform doc:name="Transform Message" doc:id="de8a9490-a353-4afa-aefe-d7ef326dddeb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+final2: (payload map  (value,index) -> using(eachValue=value splitBy ';'){
+		value : splitBy(eachValue[0],'=')[1] as Number
+}) reduce (item, accumulator=0) -> (accumulator + item.value)
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="enrichEachElement" doc:id="b6541485-94fd-4cbb-a8ba-80df3219fcdc" >
+		<logger level="INFO" doc:name="Logger" doc:id="7df9715b-202c-4754-8ea4-4592beef3f43" message="## Received Request to New Thread ##"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="f4fea9a7-4330-44db-87b0-107127ddee0b" variableName="oPayload"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="93c8c0aa-2200-4af6-8b6c-f2149440443c" class="java.lang.Thread" method="sleep(long)">
+			<java:args ><![CDATA[#[{'arg0': 10000}]]]></java:args>
+ 		</java:invoke-static>
+		<set-payload value="#[vars.oPayload]" doc:name="Set Payload" doc:id="d38ca3df-300f-4b04-af13-03f28886869a" />
+		<aggregators:group-based-aggregator doc:name="Group based aggregator" doc:id="457add9f-a74a-409c-90f6-1b60c15a332a" groupSize="#[vars.recordsSize]" name="Group All Elements">
+			<aggregators:incremental-aggregation >
+				<logger level="INFO" doc:name="Logger" doc:id="5d00a12c-36b1-4cf6-adbe-6034602de7f7" message="## Collected Elements: #[payload]"/>
+			</aggregators:incremental-aggregation>
+			<aggregators:aggregation-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="3a7c5d58-ec2f-4f9a-84d8-ee74ac1bd846" message="## Aggregation Completed ##"/>
+				<vm:publish queueName="responseQ" doc:name="Publish" doc:id="94617c69-4d6c-461d-9d03-28eff0419ae5" config-ref="VM_Config"/>
+			</aggregators:aggregation-complete>
+		</aggregators:group-based-aggregator>
+	</flow>
+</mule>

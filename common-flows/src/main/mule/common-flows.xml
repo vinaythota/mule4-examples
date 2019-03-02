@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="test-common-flow" doc:id="722de88d-f33a-4db0-8a6a-843a1fb593d5" >
+		<set-payload value="This is test common flow" doc:name="Set Payload" doc:id="60c59dda-a11d-4d6a-8645-c3361c0307f2" />
+	</flow>
+</mule>

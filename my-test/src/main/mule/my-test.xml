@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:spring="http://www.mulesoft.org/schema/mule/spring"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/spring/current/mule-spring.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="10974011-d1f9-4da1-9bb3-15f442a06254" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<spring:config name="Spring_Config" doc:name="Spring Config" doc:id="daffe5ab-7164-4738-8fce-9ad5d35f53bf" files="beans.xml" />
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="81469288-9ff3-4b6e-9e73-035b568b816a" />
+	<flow name="my-testFlow" doc:id="d83923a0-3a17-4b73-8f40-95ee1cf1f9b7" >
+		<http:listener doc:name="Listener" doc:id="8f579510-9696-49ad-b70e-479a1041e36d" config-ref="HTTP_Listener_config" path="/">
+			<http:response statusCode="#[vars.httpStatus]" />
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="aa2f93e1-5214-4b09-b065-769045289c68" message="## Received a request ## :#[payload]"/>
+		<set-variable value="#['MyCID']" doc:name="Set Variable" doc:id="b372559c-1044-4404-b3d6-7b3ddf6ace4b" variableName="pCorrelationId"/>
+		<set-variable value="#['en']" doc:name="Set Variable" doc:id="9b1288c1-8d4d-43d3-a23d-5f45b88b8ae0" variableName="userLanguage" />
+		<flow-ref doc:name="Flow Reference" doc:id="5f780ed6-93e1-4e83-8a93-d5ea8ec79aed" name="set-correlation-ids-sub-flow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="c595ee13-9851-4624-a4ba-f290ac27fea5" name="build-error-response-internal-error-flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="f3b6e508-9764-42cc-9024-20d230e87bca" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+//import modules::MessageTranslator
+import java!com::wavemoney::util::MessageTranslator
+output application/json
+---
+{
+	id: correlationId,
+	cid: vars.correlationId,
+	rcid : vars.rootCorrelationId,
+	message: MessageTranslator::translateMessage(app.registry.messageTranslator,'RES-000','en'),
+	errorMessage : vars.errorMessage,
+	status: vars.httpStatus
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

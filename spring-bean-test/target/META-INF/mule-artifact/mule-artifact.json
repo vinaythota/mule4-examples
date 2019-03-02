@@ -1,0 +1,26 @@
+{
+  "configs": [
+    "spring-bean-test.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:spring-bean-test:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.1.5",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [
+        "com.test"
+      ],
+      "exportedResources": [
+        "log4j2.xml",
+        "beans.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

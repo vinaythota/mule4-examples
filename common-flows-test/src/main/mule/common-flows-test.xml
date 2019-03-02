@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<import doc:name="Import" doc:id="44ac3561-93ef-4d37-9779-1eef1ee9e53f" file="common-flows.xml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="45366b66-ade1-479e-88ac-0c8f1da85f62" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="common-flows-testFlow" doc:id="63d9f77c-6c5d-4563-b2f7-03c6b57c8c54" >
+		<http:listener doc:name="Listener" doc:id="d4e0a18f-0a80-41db-b664-9a352530883e" config-ref="HTTP_Listener_config" path="/"/>
+		<flow-ref doc:name="Flow Reference" doc:id="5d1718ac-d1fb-4b5b-99a2-a403c714524c" name="test-common-flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="0e887945-ac8e-4376-930d-44a72fbbe2e5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message : payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

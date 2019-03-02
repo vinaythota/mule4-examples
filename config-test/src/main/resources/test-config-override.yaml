@@ -1,0 +1,5 @@
+http:
+  port: "8084"
+
+host:
+  name : "Vinay1"

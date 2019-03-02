@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:netsuite="http://www.mulesoft.org/schema/mule/netsuite" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/netsuite http://www.mulesoft.org/schema/mule/netsuite/current/mule-netsuite.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6c8be9d3-1398-459c-bd58-213554fc89e8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config1" doc:name="VM Config" doc:id="45316d8f-ef2a-4ced-be20-9883a312905f" >
+		<vm:queues >
+			<vm:queue queueName="myqueue" />
+		</vm:queues>
+	</vm:config>
+	<flow name="MainFlow" doc:id="9a63cbaa-4dbc-4bfe-88ac-4274165c79d1" >
+		<http:listener doc:name="Listener" doc:id="ccca4b7f-84dd-46b5-8322-93352f761ebd" config-ref="HTTP_Listener_config" path="/testDynamicFlowCalling"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c08adfcc-0a30-49e6-bb05-b4d7e7835cbb" message="Incoming Request"/>
+		<ee:transform doc:name="Transform Message" doc:id="cff81766-2944-4b84-be73-368ca0497b8a" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="testvar" ><![CDATA[%dw 2.0
+output application/java
+---
+payload as Array
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5c675238-55f8-44eb-a1f3-344aad74cb35" message="Before Foreach. Payload: #[payload]"/>
+		 				<set-variable value="#[sizeOf(payload)]" doc:name="Set Variable" doc:id="1379043d-f095-41ae-8412-82c3e5e5b546" variableName="arraysize"/>
+			<foreach doc:name="For Each" doc:id="104d4904-7fc8-4063-9bd0-b2bb7d6375e1" collection="#[payload]">
+		<async doc:name="Async" doc:id="32f22c82-f579-4a2d-b0bf-7543dd89f3f9" >
+			<flow-ref doc:name="ForEachFlowRef" doc:id="a7dd7ef0-1088-4d08-a2a0-f1e2915ecb54" name="ForEachFlowRef"/>
+				<logger level="INFO" doc:name="For Each logger" doc:id="0fda5bcd-a595-4afd-b49b-7cba5a0727f2" message=" Inside aggregator: Payload: #[payload]  " />
+				<aggregators:group-based-aggregator doc:name="Group based aggregator" doc:id="6a56a9ba-42db-4b38-9542-5679795247df" name="groupagg" groupSize="#[vars.arraysize]">
+					<aggregators:incremental-aggregation >
+						<logger level="INFO" doc:name="Logger" doc:id="4a85a76c-66e9-4c52-a528-826cf87e2b23" message="incremental size #[sizeOf(payload)]"/>
+					</aggregators:incremental-aggregation>
+					<aggregators:aggregation-complete>
+						<vm:publish doc:name="Publish" doc:id="0bf1527c-385d-45b3-8b21-d55ca6fbb3b5" config-ref="VM_Config1" queueName="myqueue" />
+			</aggregators:aggregation-complete>
+		</aggregators:group-based-aggregator>
+		</async>
+		</foreach>
+		<vm:consume queueName="myqueue" doc:name="Consume" doc:id="92c785db-169e-4d5e-a507-f283d7c5a6e5" config-ref="VM_Config1"/>
+		<ee:transform doc:name="Transform Message" doc:id="cdc9a53c-80c1-4f04-ba18-85faf1085378">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="263acd83-8203-4a50-a3c4-5d1f51480a94" message="Response final : #[output application/json --- payload]" />
+	</flow>
+	<flow name="ForEachFlowRef" doc:id="b399623d-155c-4a1d-a7c7-16ef353a3198" >
+		<logger level="INFO" doc:name="Logger ForEach Flow Call" doc:id="560329e8-afd4-4c1a-9f5c-f60e3ee01bb5" message="For Each Flow Call Input  #[payload]" />
+		<scripting:execute doc:name="Execute" doc:id="7fec6d78-8750-4c3a-a5ea-97cfed7a12b0" engine="groovy">
+			<scripting:code>java.lang.Thread.currentThread().sleep(500);
+return payload</scripting:code>
+		</scripting:execute>
+		<set-payload value='#[payload ++ now:now() as String {format: "YYYY-MM-dd-hh:mm:ss.SS"}]' doc:name="Set Payload" doc:id="81133fb6-ae84-4017-a888-7b24119f4a38" />
+		<logger level="INFO" doc:name="Logger Transform" doc:id="58ec50d8-fe9e-45ba-bd83-fcf9c6cc5dd6" message='Before Aggregator #[now() as String {format: "YYYY-MM-dd-hh:mm:ss.SS"}]  #[java!java::lang::Thread::currentThread()]  #[payload] ' />
+	</flow>
+</mule>

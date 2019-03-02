@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<sub-flow name="wait-sub-flow" doc:id="762b823d-91de-4270-9ece-d9f351dce498" >
+		<scripting:execute doc:name="Execute" doc:id="ab370337-0efe-40d0-9765-b3ec00944a15" engine="groovy">
+			<scripting:code>Thread.sleep(30000);
+return payload;</scripting:code>
+		</scripting:execute>
+	</sub-flow>
+	<flow name="vm-test-mule4-non-persistent" doc:id="ade31eb3-f526-4b98-a23f-c616f4a1cda3" >
+		<http:listener doc:name="Listener" doc:id="3b4003f6-794f-4dd9-aafd-2eb626c51d78" config-ref="HTTP_Listener_config" path="/vmNonPers"/>
+		<logger level="INFO" doc:name="Logger" doc:id="925e314d-a0d9-4179-be48-d89e57133e76" message="# Received a request for VM Non Persistent # Payload: #[payload]"/>
+		<foreach doc:name="For Each" doc:id="a078e549-79c3-426c-a68c-ed06f1862044" >
+			<vm:publish queueName="nonPerQ" doc:name="Publish" doc:id="d2d9381d-191a-430d-a916-7de27f44a89a" config-ref="nonPers"/>
+		</foreach>
+	</flow>
+	
+	<flow name="vm-test-mule4-nonpersistent-listner" doc:id="3386d18d-5719-4979-bcbe-a2591ad8504e" maxConcurrency="1">
+		<vm:listener queueName="nonPerQ" doc:name="Listener" doc:id="0e34780f-b2b7-4bae-9ac3-e16606fa3302" config-ref="nonPers"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ea49653a-18aa-4163-87de-e08a41ce2251" message="# Consumed Message from Non Persistent Queue, Payload: #[payload] #"/>
+		<flow-ref doc:name="wait-sub-flow" doc:id="f474e1aa-44c6-4115-a38c-95ee52bf1fc4" name="wait-sub-flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f9f6114d-fd39-40a2-a99d-e4a8066c5aff" message="# Completed processing after consuming from non persisting queue: #[payload]"/>
+	</flow>
+	
+	<flow name="vm-test-mule4-persistent" doc:id="c3e64356-69af-41ab-b44a-4df2a521728f" >
+		<http:listener doc:name="Listener" doc:id="92628c8d-27c8-4fcb-a9a9-e6ff6d882891" config-ref="HTTP_Listener_config" path="/vmPers"/>
+		<logger level="INFO" doc:name="Logger" doc:id="022fa5e9-5d52-47de-9e96-e32fd1ec12e9" message="# Received a request for VM Persistent # Payload: #[payload]"/>
+		<foreach doc:name="For Each" doc:id="a078e005-5a91-4634-a8ee-83441f828532" >
+			<vm:publish queueName="perQ" doc:name="Publish" doc:id="8112300d-4415-445d-b228-bc3287ceac63" config-ref="persistent"/>
+		</foreach>
+	</flow>
+	
+	<flow name="vm-test-mule4-persistent-listner" doc:id="54f8e51b-68b1-4aec-a57e-d6a346af50a2" maxConcurrency="1">
+		<vm:listener queueName="perQ" doc:name="Listener" doc:id="a2338fa2-733f-45e3-8e61-fdf07c1d1fd9" config-ref="persistent"/>
+		<logger level="INFO" doc:name="Logger" doc:id="fed4243b-937e-4961-9415-29b206782b9b" message="# Consumed Message from Persistent Queue, Payload: #[payload] #"/>
+		<flow-ref doc:name="wait-sub-flow" doc:id="f5788ee7-a496-4fa0-8533-b1c6e908176f" name="wait-sub-flow" />
+		<logger level="INFO" doc:name="Logger" doc:id="7ae054a3-e179-4ec4-a57b-e76d5f9e601a" message="# Completed processing after consuming from persisting queue: #[payload]"/>
+	</flow>
+</mule>

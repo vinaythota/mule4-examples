@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<configuration-properties file="test.yaml" />
+	
+	<ee:object-store-caching-strategy name="Caching_Strategy_NonPersistent" doc:name="Caching Strategy" doc:id="3c195d0c-5fa3-4a4a-9704-7775ec72fab9" objectStore="myStoreNonPersistent"/>
+	
+	<ee:object-store-caching-strategy name="Caching_Strategy_Persistent" doc:name="Caching Strategy" doc:id="da31eb78-4bda-4f74-8b39-aeb82487eac5" objectStore="myStorePersistent"/>
+	
+	<ee:object-store-caching-strategy name="Caching_Strategy_Persistent_Private" doc:name="Caching Strategy" doc:id="12f1c188-a38f-4754-930c-0fb2d163a784">
+		<os:private-object-store alias="myPrivateStorePersistent" persistent="true" /> 
+	</ee:object-store-caching-strategy>
+	
+	<os:object-store name="myStoreNonPersistent" persistent="false"/>
+	
+	<os:object-store name="myStorePersistent" persistent="true" />	
+	
+</mule>

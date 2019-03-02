@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.mulesoft.org/schema/mule/spring"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/spring/current/mule-spring.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<spring:config name="Spring_Config" doc:name="Spring Config" doc:id="7357a6a6-a2af-4dec-9460-1a030b456eea" files="beans.xml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="59ee9fd3-6050-4e22-b99e-5c985c110642" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="spring-testFlow" doc:id="238ef0c7-c2e7-4639-95aa-4cc8fe920d93" >
+		<http:listener doc:name="Listener" doc:id="215aa5ad-c93e-498e-a8ea-f42faa4b1e6d" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f4990b9b-2c4d-43ad-a991-81a68f69b2a4" message="## Recived Request ##"/>
+	</flow>
+	
+	</mule>

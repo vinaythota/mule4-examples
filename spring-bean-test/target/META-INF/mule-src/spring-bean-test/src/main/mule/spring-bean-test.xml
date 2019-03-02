@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:spring="http://www.mulesoft.org/schema/mule/spring"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/spring/current/mule-spring.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2e871c53-2d5d-4bd5-81a8-d8dd794fcee7" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<spring:config name="Spring_Config" doc:name="Spring Config" doc:id="76afbd53-2a7a-4f49-b9d3-bbdf4ed1b4c8" files="beans.xml" />
+	<flow name="bean-test-flow" doc:id="36c7f18d-961c-4669-ab64-9dad6989209f" >
+		<http:listener doc:name="Listener" doc:id="2d68e826-0d7f-4385-825f-1ebe43ad51c0" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a63b529b-dfd3-49ed-bd7c-a570305330ed" message="## Received a request New ##"/>
+		<java:invoke doc:name="Invoke" doc:id="1daeccab-71de-4ddc-b8e0-4f967c44c54f" instance="#[app.registry.greetingBean]" class="com.test.Greeting" method="sayHello(String)">
+			<java:args ><![CDATA[#[{arg0:"Guten"}]]]></java:args>
+		</java:invoke>
+		<ee:transform doc:name="Transform Message" doc:id="e4cefdce-b6f9-49d2-aff9-d1e10d3c43ba" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import java!com::test::Greeting
+output application/json
+
+---
+{
+	value8: Greeting::getValue(app.registry.greetingBean,"Works1")
+//	value19: app.registry.greetingBean.sayHello("test")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ca071f48-d8ec-441a-b6ae-e5c0977ad696" message="Response is: #[payload]"/>
+	</flow>
+
+</mule>

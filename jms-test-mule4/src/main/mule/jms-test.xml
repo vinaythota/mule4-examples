@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="41860a22-61be-4b23-8f7d-28e8e791a464" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="7a27efe9-ee63-4a86-8ef8-85625f463f8f" >
+		<jms:active-mq-connection username="admin" password="admin">
+      			<jms:factory-configuration brokerUrl="tcp://localhost:61616"
+                                 initialRedeliveryDelay="20000" redeliveryDelay="20000"  maxRedelivery="10"/>
+  		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="jms-testFlow" doc:id="6ec475e2-9e21-433b-bf86-a7d38da45288" >
+		<http:listener doc:name="Listener" doc:id="2eefc251-b5e2-4b96-955c-b1bd3dc2e201" config-ref="HTTP_Listener_config" path="/jms"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7b656db8-1bd2-4b5b-a295-834452f25d79" message="## Received Request to JMS Test ##"/>
+		<ee:transform doc:name="Transform Message" doc:id="757c8b80-c2d4-4568-be68-eaa96e36e668" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	message : "test message"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable variableName="group" value="WM" />
+		<jms:publish doc:name="Publish" doc:id="fbc716b5-2055-4d65-ada5-c89d7a6220f9" config-ref="JMS_Config" destination="testQ">
+			<jms:message >
+				<jms:properties ><![CDATA[#[{
+	groupName : vars.group
+}]]]></jms:properties>
+			</jms:message>
+		</jms:publish>
+	</flow>
+	
+	<flow name="jms-testFlow1" doc:id="376060c1-13da-42d3-959b-3885ffad100a" >
+		<jms:listener doc:name="Listener" doc:id="b4b66107-af59-452f-b392-dc112eb3738b" config-ref="JMS_Config" destination="testQ">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="1f33acd9-32ee-43b5-9e56-86abfb163b59" message="## Consumed a message from Queue ##"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f8ac673d-25a2-4b58-a51a-7e5d726058ed" message="Content: #[payload]"/>
+		<logger level="INFO" doc:name="log group name" message="Grp Name from Attributes: #[attributes.properties.userProperties.groupName]"/>
+		<logger level="INFO" doc:name="log group name" message="Grp Name from Variables #[vars.group]"/>
+		
+	</flow>
+
+</mule>

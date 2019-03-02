@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="341110ed-b440-43ff-9350-a8ea053e7a20" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<flow name="config-testFlow" doc:id="54baef7a-d8b0-4ecc-bce4-51aba704983b" >
+		<http:listener doc:name="Listener" doc:id="77c9040e-0edb-4225-ab16-c19faa811577" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="19fb75e1-a569-4e3e-a56b-b4e22f369872" message="## Received Request ##"/>
+		<set-payload value="#[output application/json  --- name : p('host.name')]" doc:name="Set Payload" doc:id="352296d8-4cfb-4cfb-8bb0-dcb057c7cf80" />
+	</flow>
+	
+	<configuration-properties doc:name="Configuration properties" doc:id="ea8e85b5-cb45-44dc-a495-7c769a9ee647" file="test-config-override.yaml"/>
+	<configuration-properties doc:name="Configuration properties" doc:id="3c0fa481-4e56-4679-b27b-33101fc42a61" file="test-config.yaml" />
+	
+	
+	
+	
+</mule>
