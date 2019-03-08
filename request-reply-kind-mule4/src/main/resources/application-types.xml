@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="str_type" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#f255001b-803c-416a-b3ee-8bbe2e43bfad">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="str_type"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#39da5e31-ec49-460a-9cf0-5de70ccd040b"/>
+</types:mule>

@@ -14,7 +14,8 @@
         "callflowdynamicallypoc"
       ],
       "exportedResources": [
-        "log4j2.xml"
+        "log4j2.xml",
+        ".main.xml.swp"
       ]
     }
   },

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="json_type" format="json">
+      <types:shape format="weave" example="examples/test.json"><![CDATA[%dw 2.0
+type json_type = {|
+  id: Number {"typeId": "int"}, 
+  name: String
+|} {"MetadataFormat": "json",
+"example": "{\"id\":100,\"name\":\"vinay thota\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#f56ed63c-04e9-4641-bbe0-d321cf437c29">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="json_type"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	
+	<flow name="request-reply-kind-mule4Flow" doc:id="d02cccd4-5f15-42bc-b1f3-5f739ceb27df" >
+		<http:listener doc:name="Listener" 
+			doc:id="a23707ba-b61f-4ea6-aded-ab7618d50598" 
+			config-ref="httpListner"
+			path="/"/>
+		<logger  level="INFO" message="## Received Request, Env: ${env}, Host: ${http.host}, Port: ${http.port}"/>
+		<ee:transform doc:name="Transform Message" doc:id="39da5e31-ec49-460a-9cf0-5de70ccd040b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload splitBy '\n']]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[sizeOf(payload)]" doc:name="Set Variable" doc:id="bc684f55-c81e-4a19-b14f-0f6480816dc6" variableName="ordersSize" />
+		<foreach collection="#[payload]">
+			<ee:transform doc:name="Transform Message" doc:id="2b6ea240-d5d3-44a4-9242-819337eac3fd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	groupSize: vars.ordersSize,
+	sequenceNo: vars.counter,
+	orderInfo: payload
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<vm:publish doc:name="Publish" doc:id="d11e0f71-86f3-43ef-90ba-520e3dab3e9d" config-ref="vmConfig" queueName="testQ" sendCorrelationId="AUTO"/>
+		</foreach>
+		<vm:consume queueName="responseQ" doc:name="Consume" doc:id="87315d8b-f3de-4ce2-b593-3ad261d1f410" config-ref="vmConfig" timeout="10"/>
+		<ee:transform doc:name="Transform Message" doc:id="cedd7b7f-56db-4287-a041-17c9ae4b9c95" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	sumOfOrders: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+	<flow name="processOrders" >
+		<vm:listener config-ref="vmConfig" queueName="testQ" />
+		<logger message="## Consumed a message from VM Queue, Processed, Amount: #[payload] ##" level="INFO" />
+		<ee:transform doc:name="Transform Message" doc:id="f255001b-803c-416a-b3ee-8bbe2e43bfad" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+(payload.orderInfo splitBy ',')[1]]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="groupSize" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.groupSize]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<aggregators:group-based-aggregator doc:name="Group based aggregator" doc:id="67f1344a-d21c-4596-a08a-d39fd8b8eb53" name="OrdersAggregator" groupSize="#[vars.groupSize]">
+			<aggregators:incremental-aggregation >
+				<logger level="INFO" doc:name="Logger" doc:id="a64b0bf6-9de5-4d06-828d-cef29b217aa0" message="## Element Collected, Payload: #[payload]" />
+			</aggregators:incremental-aggregation>
+			<aggregators:aggregation-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="ff6b413e-9884-4f76-b5e6-2e945f6f8386" message="## Aggregation Completed, Payload: #[payload] ##" />
+				<ee:transform doc:name="Transform Message" doc:id="9283aaec-c4ad-4a92-bfa9-14fd9e3d6f7c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload reduce (value, acc) -> acc as Number + value as Number]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="8f090a01-6aac-4f76-af83-21532d3e4df1" message="## Aggregated Value is: #[payload] ##"/>
+				<vm:publish doc:name="Publish" doc:id="625ebcec-e66b-4ad3-ad66-e799c323cdef" config-ref="vmConfig" queueName="responseQ"/>
+			</aggregators:aggregation-complete>
+		</aggregators:group-based-aggregator>
+	</flow>
+</mule>

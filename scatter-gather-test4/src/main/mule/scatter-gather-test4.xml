@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<flow name="scatter-gather-test4Flow" doc:id="38434c1b-e6b7-4a0a-a61d-2652d1d67e7f" >
+		<http:listener doc:name="Listener" doc:id="1fe7f194-31be-40e0-aebb-cc3046651ab5" config-ref="HTTP_Listener_config" path="/">
+			<http:error-response statusCode="511" reasonPhrase="Alas Failed">
+				<http:body ><![CDATA[#[output text/plain --- "Internal Server Error"]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="f555e2dd-d550-400c-b71f-61c3339fcb61" message="## Received Request, Payload: #[payload] ##"/>
+		<xml-module:xslt-transform doc:name="Xslt transform" doc:id="4bf7a723-fbad-455e-9391-9c1382369c86" />
+		<ee:transform doc:name="Transform Message" doc:id="f56ed63c-04e9-4641-bbe0-d321cf437c29" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"id" : payload.id,
+	"firstName" : (payload.name splitBy ' ')[0],
+	"lastName" : (payload.name splitBy ' ')[1]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="83e2bd9c-32b4-4a66-a4d6-836d645786c0" >
+			<route>
+				<try doc:name="Try" doc:id="e7009d83-2138-4a85-ace0-cdfbe975fe30" >
+					<logger level="INFO" doc:name="Logger" doc:id="4022aa13-f1be-43c7-85df-1afd22ea1b5c" message="## Route 1 ##" />
+					<scripting:execute doc:name="Execute" doc:id="6da21645-83ca-4640-a4f4-bb29b10808d6" engine="groovy">
+					<scripting:code>payload.firstName='Routeer1';
+return payload;</scripting:code>
+				</scripting:execute>
+					<raise-error type="ANY:UNKNOWN" description="My Custom Exception" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f177286a-7951-4d37-b9e7-cf586890fc58" type="ANY">
+							<ee:transform doc:name="Transform Message" doc:id="459c0d44-641e-4ca2-96cd-24b5fdd67775" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"error" : "error from supplier 1"
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="85e60c6f-8e88-4456-889a-698e925d7df5" message="## Route 2 ##"/>
+				<scripting:execute doc:name="Execute" doc:id="aea44c0f-b87b-4094-b1b6-4ed07a0a7545" engine="groovy">
+					<scripting:code >payload.firstName='Routeeer2';
+return payload;</scripting:code>
+				</scripting:execute>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="217dc139-cf22-45fb-8a1a-4489c498773e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload..payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="773071fb-7829-40ae-b3f8-b426d94fa647" message="## Aggregated Payload: #[payload] ##"/>
+	</flow>
+</mule>

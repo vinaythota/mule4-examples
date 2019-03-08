@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e149e3c6-dcb7-47d1-805c-7f2e718d5b2a" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="3eac7e36-4283-4fd5-987f-30bce9dccf8d" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616"/>
+			
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="test-projectFlow" doc:id="a684b3d1-6f3e-4f41-a716-0cf8312965b5" >
+		<http:listener doc:name="Listener" doc:id="e99c7807-573a-4de2-a03f-2f2acd94ba00" config-ref="HTTP_Listener_config" path="/"/>
+		<ee:transform doc:name="Transform Message" doc:id="fcfed436-bd74-4d9c-bedb-1625f9baab58" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload splitBy '\n']]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="81b50608-cec6-4c36-a1d0-dcd77f34da8f" message="# Payload is: #[payload] ##"/>
+		<foreach doc:name="For Each" doc:id="503ca6e8-ebb0-4c9a-987c-a92bb5427b72" >
+			<async doc:name="Async" doc:id="0735a92f-9340-48e8-a4d3-4e25e7ca97c0" >
+				<logger level="INFO" doc:name="Logger" doc:id="1c913a48-fe3c-4447-b984-6cfe1e4c4a5e" message="## Sending to Topic , #[payload]##"/>
+				<jms:publish doc:name="Publish" doc:id="0a47a92d-0a68-4bd6-a24d-ed22ec097700" config-ref="JMS_Config" destination="testTopic" destinationType="TOPIC"/>
+			</async>
+		</foreach>
+	</flow>
+	
+	<flow name="consumeMessages">
+		<jms:listener doc:name="Listener" doc:id="a375b698-d834-407d-a070-88a2353a8fbf" config-ref="JMS_Config" destination="testTopic" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer subscriptionName="TestSubscription" shared="true"/>
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="ca6e5fbd-7db8-4bfd-b402-cdbf5c497146" message="## Consumed Message from topic : #[payload] ##"/>
+	</flow>
+</mule>

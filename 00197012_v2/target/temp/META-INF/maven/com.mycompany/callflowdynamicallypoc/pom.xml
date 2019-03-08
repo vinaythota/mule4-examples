@@ -125,22 +125,22 @@
     </pluginRepository>
   </pluginRepositories>
   <build>
-    <sourceDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/src/main/java</sourceDirectory>
-    <scriptSourceDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/src/main/scripts</scriptSourceDirectory>
-    <testSourceDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/src/test/java</testSourceDirectory>
-    <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/classes</outputDirectory>
-    <testOutputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/test-classes</testOutputDirectory>
+    <sourceDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/src/main/java</sourceDirectory>
+    <scriptSourceDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/src/main/scripts</scriptSourceDirectory>
+    <testSourceDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/src/test/java</testSourceDirectory>
+    <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/classes</outputDirectory>
+    <testOutputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/test-classes</testOutputDirectory>
     <resources>
       <resource>
-        <directory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/src/main/resources</directory>
+        <directory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/src/main/resources</directory>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/src/test/resources</directory>
+        <directory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/src/test/resources</directory>
       </testResource>
     </testResources>
-    <directory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target</directory>
+    <directory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target</directory>
     <finalName>callflowdynamicallypoc-1.0.0-SNAPSHOT</finalName>
     <pluginManagement>
       <plugins>
@@ -401,7 +401,7 @@
               <goal>site</goal>
             </goals>
             <configuration>
-              <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/site</outputDirectory>
+              <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/site</outputDirectory>
               <reportPlugins>
                 <reportPlugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -417,7 +417,7 @@
               <goal>site</goal>
             </goals>
             <configuration>
-              <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/site</outputDirectory>
+              <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/site</outputDirectory>
               <reportPlugins>
                 <reportPlugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -433,7 +433,7 @@
               <goal>deploy</goal>
             </goals>
             <configuration>
-              <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/site</outputDirectory>
+              <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/site</outputDirectory>
               <reportPlugins>
                 <reportPlugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -444,7 +444,7 @@
           </execution>
         </executions>
         <configuration>
-          <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/site</outputDirectory>
+          <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/site</outputDirectory>
           <reportPlugins>
             <reportPlugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -469,6 +469,6 @@
     </plugins>
   </build>
   <reporting>
-    <outputDirectory>/Users/vinay/AnypointStudio/Mule4WS/00197012_v2/target/site</outputDirectory>
+    <outputDirectory>/Users/vinay/AnypointStudio/MulePOCCode/00197012_v2/target/site</outputDirectory>
   </reporting>
 </project>
