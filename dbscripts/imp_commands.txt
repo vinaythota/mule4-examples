@@ -1,0 +1,2 @@
+mysql -u business -pbusiness123 --database=odp --execute="call insertEmployees(10,100)"
+mysql -u business -pbusiness123 --database=odp < insertEmployees.sql
