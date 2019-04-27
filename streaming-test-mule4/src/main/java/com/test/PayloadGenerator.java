@@ -11,7 +11,8 @@ public class PayloadGenerator {
 	
 	public static void main(String[] args) throws IOException {
 		
-		generateXMLPayload("orders.xml", 100000000);
+		//generateXMLPayload("orders.xml", 100000000);
+		generateCSVPayload("orders.csv", 1000);
 		
 	}
 	
@@ -21,7 +22,7 @@ public class PayloadGenerator {
 
 			Random r1 = new Random();
 
-			for (int i = 1; i <= 1000000000; i++) {
+			for (int i = 1; i <= noOfRecords; i++) {
 				writer.write("ORD:" + i + "," + r1.nextInt(10000) + "\n");
 			}
 			writer.flush();
