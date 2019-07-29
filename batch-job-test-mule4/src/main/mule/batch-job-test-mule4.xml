@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd">
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="77a5869d-a251-4a5a-84d9-1ba8f397e765" >
 		<db:my-sql-connection host="localhost" port="3306" user="odp" password="odp123" database="odp" />
 	</db:config>
 	<flow name="batch-job-test-mule4Flow" doc:id="b1b173bd-bf28-4f3a-b9bf-48408d6d8c64"  maxConcurrency="1">
 		<scheduler doc:name="Scheduler" doc:id="d4e81a36-6adc-4231-984d-ef8447232260" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+				<fixed-frequency frequency="6000" timeUnit="SECONDS" startDelay="6000"/>
 			</scheduling-strategy>
 		</scheduler>
 		<db:select doc:name="Select" doc:id="9d6005f6-069c-4aed-9b79-000b77fb4b39" config-ref="Database_Config">
 			<db:sql >select * from employee</db:sql>
 		</db:select>
-		<batch:job jobName="batch-job-test-mule4Batch_Job" doc:id="e63d909b-0f7d-4226-bec7-3f0897a1302f" >
+		<set-variable value="OutSide Variable" doc:name="Set Variable" doc:id="eaffafb8-03bc-405a-b57c-6672e706827e" variableName="outSideVar"/>
+		<batch:job jobName="batch-job-test-mule4Batch_Job" doc:id="e63d909b-0f7d-4226-bec7-3f0897a1302f" maxFailedRecords="-1">
 			<batch:process-records >
 				<batch:step name="STEP-1" doc:id="48f681b0-d43f-41ad-99e0-6e2b180780be" >
 					<logger level="INFO" doc:name="Logger" doc:id="a42136fe-9ac0-4179-b86a-9bfb96aafbf7" message="## Step 1: #[payload] ##"/>
@@ -30,17 +32,22 @@ output application/java
 ---
 payload map {
 	changedName: 'STEP1' ++ $.department,
-	empId: $.id
+	empId: $.id,
+	depId: if($.id == 1) 'test' else $.id + 1
 }]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
 						<logger level="INFO" doc:name="Logger" doc:id="c19f7eae-be95-477a-bfcb-b91a995cb119" message="##  STEP 1 Aggregation: #[payload]"/>
 						<db:bulk-update doc:name="Bulk update" doc:id="df8335fd-f3cb-46a5-ac48-ef4f4521cd00" config-ref="Database_Config">
-							<db:sql >update employee set fname = :changedName where id = :empId</db:sql>
+							<db:sql >update employee set fname = :changedName, depId= :depId where id = :empId</db:sql>
 						</db:bulk-update>
+						<logger level="INFO" doc:name="Logger" doc:id="c0a4264d-cf68-41f8-b186-5d351204f20a" message="## Result from DB Call: #[payload] ##"/>
 					</batch:aggregator>
+					<set-variable value="Inside Variable In Step1" doc:name="Set Variable" doc:id="2bc935e5-27c0-4409-9528-5a1a6211aec3" variableName="insideVariable1"/>
 				</batch:step>
-				<batch:step name="STEP-2" doc:id="c8a4cc78-c685-4a4d-951b-bb731f994bcd" >
+				<batch:step name="STEP-2" doc:id="c8a4cc78-c685-4a4d-951b-bb731f994bcd" acceptPolicy="ALL">
+					<set-variable value="Inside Variable in Step 2" doc:name="Set Variable" doc:id="40a78079-e4be-4f46-9ebd-02e32241fcd2" variableName="insideVariable2"/>
+					<set-variable value="Inside Variable in Step 1 Changed" doc:name="Set Variable" doc:id="414089e4-74a8-4377-9734-60b4625303ff" variableName="insideVariable1"/>
 					<logger level="INFO" doc:name="Logger" doc:id="02b29ed9-ee39-4a1f-84e6-a2e3ffe91b16" message="## Step 2 : #[payload] ##"/>
 					<batch:aggregator doc:name="Batch Aggregator" doc:id="cb4b6a4e-32cf-41cf-b930-dd76a1570c47" size="3">
 						<logger level="INFO" doc:name="Logger" doc:id="033aee0c-4f4c-4b59-a4f0-7924457e14b7" message="## STEP 2 Aggregation: #[payload]" />
@@ -55,5 +62,26 @@ payload map {
 				<logger level="INFO" doc:name="Logger" doc:id="c14a1549-556c-4b82-b42b-b7c7be587df8" message="## Final Output : #[payload] ##"/>
 			</batch:on-complete>
 		</batch:job>
+	</flow>
+	<flow name="batch-job-test-mule4Flow1" doc:id="0cd4f5bd-44a7-4b04-82cf-5284ea731193" >
+		<db:listener doc:name="On Table Row" doc:id="821328a7-4d3b-4c28-b594-2b68d4bb48b9" config-ref="Database_Config" table="employee" watermarkColumn="id">
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="DAYS" startDelay="1"/>
+			</scheduling-strategy>
+		</db:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="81f7f3ad-b987-427a-8095-d61a1d3c1738" message="## Received Payload: #[payload] ##"/>
+		<async doc:name="Async" doc:id="077b03d1-5aef-4d05-856c-75787b8b4c35" >
+			<flow-ref doc:name="Flow Reference" doc:id="9723c5e5-1368-493d-94b5-80c1457dc094" name="aggregate-records"/>
+		</async>
+	</flow>
+	<flow name="aggregate-records" doc:id="3a5f9e88-ac89-4fe1-beb0-e5862ea94287" >
+		<aggregators:size-based-aggregator doc:name="Size based aggregator" doc:id="d7863011-9777-4179-a403-1cc4d359f604" name="RecordsAggregator" maxSize="4" timeout="30">
+			<aggregators:incremental-aggregation >
+				<logger level="INFO" doc:name="Logger" doc:id="378e918b-9961-4257-ad9f-80ba62ceb98e" message="## Increment Log: #[payload] ##"/>
+			</aggregators:incremental-aggregation>
+			<aggregators:aggregation-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="cd76a5cd-aa25-499b-98f8-ec43258cfa1e" message="## Aggregated Log: #[payload] ##"/>
+			</aggregators:aggregation-complete>
+		</aggregators:size-based-aggregator>
 	</flow>
 </mule>

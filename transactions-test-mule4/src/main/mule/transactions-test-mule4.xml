@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="transactions-test-mule4Flow" doc:id="39c4d8b7-134a-46f8-959a-bd0d9ee8d2e3" >
+		<http:listener doc:name="Listener" doc:id="a57e7e4e-8239-4a23-bd9e-586b7ae757d4" config-ref="httpListner" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d64542a8-b4ad-4369-b2c2-dc424e4159f5" message="## Received Request for Transaction Test ##"/>
+		<try doc:name="Try" doc:id="a5291297-3ec0-46f7-8249-3f1248c5dbac" transactionalAction="ALWAYS_BEGIN">
+			<db:insert doc:name="Insert A1" doc:id="c75c9666-6fd3-4df3-8260-4e53f87408a6" config-ref="Database_Config">
+				<db:sql >insert into account values (1, 'A1', :address)</db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	address: now() as String {format: "yyyy-MM-dd HH:mm:ss"}
+}]]]></db:input-parameters>
+			</db:insert>
+			<logger level="INFO" doc:name="Logger" doc:id="bdfaa53d-09ea-4050-ada4-1ec86ba35f8f" message="## A1 inserted ##"/>
+			<raise-error doc:name="Raise error" doc:id="25a1aa40-a3a7-4862-9b92-08c36abdf934" type="APP:TEST" description="My Error" />
+			<db:insert doc:name="Insert" doc:id="05a91d54-8cf4-412b-8812-d68d2e1aafa5" config-ref="Database_Config">
+				<db:sql >insert into account values (2, 'A2', :address )</db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	address: now() as String {format: "yyyy-MM-dd HH:mm:ss"}
+}]]]></db:input-parameters>
+			</db:insert>
+			<logger level="INFO" doc:name="Logger" doc:id="3349c27c-d68c-44bb-8319-11f1d0957280" message="## A2 inserted ##"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c7fd00c3-6d99-4b77-8c08-bd71118bc053" type="APP:TEST">
+					<logger level="INFO" doc:name="Logger" doc:id="765434bb-5a1f-443c-b2ba-f6dc032f843b" message="## APP TEST Raised ##" />
+				</on-error-propagate>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ef3116df-c11f-49ab-bc8b-94c40425a058">
+					<logger level="INFO" doc:name="Logger" doc:id="afa1da3b-41ba-48d2-b630-d31773569084" message="## Exception Raised ##" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+</mule>
