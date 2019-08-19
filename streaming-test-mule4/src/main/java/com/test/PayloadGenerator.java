@@ -12,13 +12,15 @@ public class PayloadGenerator {
 	public static void main(String[] args) throws IOException {
 		
 		//generateXMLPayload("orders.xml", 100000000);
-		generateCSVPayload("orders.csv", 1000);
+		generateCSVPayload("orders.csv", 1000000);
 		
 	}
 	
 	private static void generateCSVPayload(String fileName, int noOfRecords) throws IOException {
 		
-		try (Writer writer = new BufferedWriter(new FileWriter(new File("oders.csv")));) {
+		System.out.println("## Started Preparing CSV Payload");
+		
+		try (Writer writer = new BufferedWriter(new FileWriter(new File("orders.csv")));) {
 
 			Random r1 = new Random();
 
@@ -27,6 +29,8 @@ public class PayloadGenerator {
 			}
 			writer.flush();
 		}
+		
+		System.out.println("## Completed Preparing CSV Payload");
 	}
 	
 	private static void generateXMLPayload(String fileName, int noOfRecords) throws IOException {
