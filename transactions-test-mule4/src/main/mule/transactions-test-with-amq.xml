@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	
+	<flow name="transactions-test-with-amqFlow" doc:id="4cf1f471-a9bb-43d2-97b1-90503523b558" >
+		<jms:listener doc:name="Listener" doc:id="10b714cb-91f1-468b-b933-bfe23d7927e5"  config-ref="JMS_Config" destination="inboundQ">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="c0349f96-1084-4714-b82a-49b4d6d1fb5b" message="## Received a message to a Queue ##"/>
+		<jms:publish config-ref="JMS_Config" destination="outboundQ"/>
+	</flow>
+	
+	
+</mule>

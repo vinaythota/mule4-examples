@@ -6,24 +6,20 @@
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
-	<flow name="test-one-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" >
-		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="/Users/vinay/tmp" watermarkMode="MODIFIED_TIMESTAMP">
+	<flow name="test-one-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" maxConcurrency="1">
+		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="/Users/vinay/tmp1" watermarkMode="MODIFIED_TIMESTAMP" recursive="false">
 			<ee:repeatable-file-store-stream inMemorySize="5024" />
 			<scheduling-strategy >
 				<fixed-frequency frequency="10000"/>
 			</scheduling-strategy>
 		</file:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="## Message Received ##"/>
-		<ee:transform doc:name="Transform Message" doc:id="9d3db889-20c8-45d9-909e-865a44988b30" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-payload as Iterator]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="## Message Received  ##"/>
 		<foreach doc:name="For Each" doc:id="a69e9d60-6e0d-4175-bd62-12d21476988c" >
 			<logger level="INFO" doc:name="Logger" doc:id="36dcb8d7-06a2-4cdc-a128-f7f8c9b3905b" message="## Inside Loop: #[payload] ##" />
+			<file:write doc:name="Write" doc:id="139ec957-69f5-4158-8000-421d4ca10579" path="/Users/vinay/tmp/output/output.csv" mode="APPEND">
+				<file:content ><![CDATA[#[payload.ID ++ ',' ++ payload.Value ++ '\n']]]></file:content>
+			</file:write>
+			<logger level="INFO" doc:name="Logger" doc:id="9db47973-a6bc-4a29-8be9-65d0c9f04ed3" message="## Payload Written: #[payload] ##"/>
 		</foreach>
 	</flow>
 </mule>

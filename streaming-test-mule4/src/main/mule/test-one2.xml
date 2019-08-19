@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+	<flow name="test-one-flow-2" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" maxConcurrency="1">
+		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="/Users/vinay/tmp" watermarkMode="MODIFIED_TIMESTAMP" recursive="false" outputMimeType="application/csv">
+			<ee:repeatable-file-store-stream inMemorySize="5024" />
+			<scheduling-strategy >
+				<fixed-frequency frequency="10000"/>
+			</scheduling-strategy>
+		</file:listener>
+		<set-variable value="#[attributes.fileName]" doc:name="Set Variable" doc:id="558147e0-8e8a-4506-aaa2-d75aeab2feec" variableName="fileName"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="## Message Received, File name: #[vars.fileName] ##"/>
+		
+		<logger level="INFO" doc:name="Logger" doc:id="8e4c6bea-c66e-4345-9567-15b527c9b094" message="## Waiting completed for: #[vars.fileName]"/>
+		<foreach doc:name="For Each" doc:id="d8cef572-37bc-4c57-b9b5-73c564e6dbc4" >
+			<logger level="INFO" doc:name="Logger" doc:id="75853f0e-60c8-433d-bcac-4f84b5654948" message="## Inside Loop: #[payload] ##" />
+			<file:write doc:name="Write" doc:id="2443727d-eaae-4128-b529-f00c41735533" path="/Users/vinay/tmp/output/output.csv" mode="APPEND">
+			</file:write>
+			<logger level="INFO" doc:name="Logger" doc:id="2de958f8-7629-4cb1-963a-996d52392616" message="## Payload Written: #[payload] ##"/>
+		</foreach>
+	</flow>
+</mule>

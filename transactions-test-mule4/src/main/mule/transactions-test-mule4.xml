@@ -5,7 +5,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<flow name="transactions-test-mule4Flow" doc:id="39c4d8b7-134a-46f8-959a-bd0d9ee8d2e3" >
+	<flow name="transactions-test-mule4Flow" doc:id="39c4d8b7-134a-46f8-959a-bd0d9ee8d2e3" initialState="stopped">
 		<http:listener doc:name="Listener" doc:id="a57e7e4e-8239-4a23-bd9e-586b7ae757d4" config-ref="httpListner" path="/"/>
 		<logger level="INFO" doc:name="Logger" doc:id="d64542a8-b4ad-4369-b2c2-dc424e4159f5" message="## Received Request for Transaction Test ##"/>
 		<try doc:name="Try" doc:id="a5291297-3ec0-46f7-8249-3f1248c5dbac" transactionalAction="ALWAYS_BEGIN">
