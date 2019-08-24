@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="545f4cb6-edd5-44bc-989c-effebd486087" >
+		<jms:active-mq-connection >
+			<reconnection failsDeployment="false">
+				<reconnect count="10" />
+			</reconnection>
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	
+	<flow name="exception-handling-test-amq-reconnnection-testFlow" doc:id="11f58a3f-fe42-4563-8f09-0b49f5790b0c" >
+		<http:listener doc:name="Listener" doc:id="7628741f-b6b6-4ef0-922d-01ca49f05096" config-ref="HTTP_Listener_config" path="/amq"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f026d4a4-5c71-4a97-a427-c75501bdbd73" message="# Received Request for AMQ Reconnection #"/>
+		<flow-ref doc:name="Flow Reference" doc:id="70090b8b-b236-4c2c-984c-af1cf40c9ca5" name="amq-reconnection-test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="440c8c93-5899-4032-9186-66f2b8796054" message="# Flow Completed #"/>
+	</flow>
+	
+	<flow name="amq-reconnection-test" doc:id="972e80dd-13f5-436c-9c77-5fb7ce5cbcb4" >
+		<jms:publish doc:name="Publish" doc:id="54bec767-dc31-433e-b7aa-81b607b96341" config-ref="JMS_Config" destination="test"/>
+		<error-handler>
+			<on-error-continue when="#[payload == '']">
+				<logger level="INFO" message="#Exception in connecting to AMQ #"/>
+			</on-error-continue> 
+			<on-error-propagate>
+				<logger level="INFO" message="#Exception in connecting to AMQ Throw Error #"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

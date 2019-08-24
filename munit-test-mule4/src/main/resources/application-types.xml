@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="product_info" format="json">
+      <types:shape format="weave" example="product_response.json"><![CDATA[%dw 2.0
+type product_info = {|
+  name: String, 
+  make: String
+|} {"MetadataFormat": "json",
+"example": "{\"name\":\"Latitude 3180\",\"make\":\"Lenovo\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#452a681f-b656-4394-9c02-a8c2708faebf">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="productDetails" type="product_info"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

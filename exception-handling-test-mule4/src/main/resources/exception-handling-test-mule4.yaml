@@ -1,0 +1,15 @@
+http:
+  port: "8085"
+  requester:
+    millsecsBetweenRetries: "15000"
+    numberOfRetries: "2"
+    
+
+mysql:
+  host: "localhost"
+  port: "3307"
+  user: "test"
+  password: "test123"
+  database: "test"
+  reconnectionCount: "10"
+  failDeploymentOnConnectionFailure: "false"

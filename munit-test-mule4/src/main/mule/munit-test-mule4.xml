@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="12801791-302c-4c31-abfc-0a324d159838" >
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b615e6be-fb94-44ef-8ede-fa2ab028e8ec" basePath="/">
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
-	<flow name="munit-test-mule4Flow" doc:id="dd0b6318-9d6d-49fb-92d2-2d905f711fb7" >
-		<http:listener doc:name="Listener" doc:id="dc2723fe-fb3c-4900-b411-4ff6fae9a6a3" config-ref="HTTP_Listener_config" path="/munit"/>
-		<logger level="INFO" doc:name="Logger" doc:id="e2c88a8e-d6e5-4a50-b897-504dc27da415" message="## Received Request for MUnit flow ##"/>
-		<choice>
-			<when expression="#[payload == 'Option1']">
-				<logger level="INFO" message="Option 1 Called"></logger>
-				<set-payload value="#['Option1']"></set-payload>
-			</when>
-			<otherwise>
-				<logger level="INFO" message="Option 2 called"></logger>
-				<set-payload value="#['Option2']"></set-payload>
-			</otherwise>
-		</choice>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="4476750f-2c9b-45e5-bf3f-9b0eda8c8007" >
+		<http:request-connection host="localhost" port="9095" />
+	</http:request-config>
+	<flow name="munit-test-mule4Flow" doc:id="8cf76f42-8daa-4bae-9c95-0534d8473dd4" >
+		<http:listener doc:name="Listener" doc:id="5cc04482-3066-4830-8455-d2a93b6b07fd" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="fd16d466-4c5b-4e14-ba31-f0213132560f" message="## Received Request ##"/>
+		<http:request method="GET" doc:name="Get Product Details" doc:id="35ac6365-a68c-4a4f-8713-1482a24ade56" config-ref="HTTP_Request_configuration" target="productDetails" path="/"/>
+		<ee:transform doc:name="Transform Message" doc:id="452a681f-b656-4394-9c02-a8c2708faebf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	productDetails: {
+		id: attributes.uriParams.productId,
+		name: vars.productDetails.name,
+		company: vars.productDetails.make
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>
