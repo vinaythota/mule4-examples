@@ -1,2 +1,7 @@
 mysql -u business -pbusiness123 --database=odp --execute="call insertEmployees(10,100)"
 mysql -u business -pbusiness123 --database=odp < insertEmployees.sql
+
+#Ref: https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql
+CREATE USER 'test'@'localhost' IDENTIFIED BY 'test123';
+GRANT ALL PRIVILEGES ON * . * TO 'test'@'localhost';
+FLUSH PRIVILEGES
