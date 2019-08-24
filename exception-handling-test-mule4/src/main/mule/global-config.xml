@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<configuration-properties file="exception-handling-test-mule4.yaml" />
+	
+	<!-- <configuration defaultErrorHandler-ref="DefaultGlobalErrorHandler"/> -->
+	
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1e3c0a6d-a08a-4f9f-a0ea-1ebe39941dcc" >
+		<http:request-connection host="localhost" port="9999">
+			<reconnection failsDeployment="true">
+				<reconnect count="5" frequency="2000"/>
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	
+	<error-handler name="DefaultGlobalErrorHandler" doc:id="2f6f655e-1de7-445d-b4d9-c70764aa6cac" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a97db126-a8a0-4e8b-b157-b7f2ac39d57d" >
+			<logger level="INFO" doc:name="Logger" doc:id="7cba7471-a80f-44b3-a455-4ee98cf191a3" message="## Default Errror Handler used! ##"/>
+		</on-error-continue>
+	</error-handler>
+	
+	<error-handler name="ReferencableErrorHandler" doc:id="7d2fcba9-84e7-4efe-a8f4-7c5e2f430df1" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6b8cdb1e-e868-4136-acc5-7caa5633ae58">
+			<logger level="INFO" doc:name="Logger" doc:id="4c567d00-9038-4bc5-a773-5ab264b5a1c9" message="## Referencable Error Handler Called! ##" />
+		</on-error-propagate>
+	</error-handler>
+</mule>

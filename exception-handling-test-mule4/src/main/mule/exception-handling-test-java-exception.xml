@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="exception-handling-test-http-reconnnection-test-java-exceptionFlow" doc:id="11f58a3f-fe42-4563-8f09-0b49f5790b0c" >
+		<http:listener doc:name="Listener" doc:id="7628741f-b6b6-4ef0-922d-01ca49f05096" config-ref="HTTP_Listener_config" path="/java"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f026d4a4-5c71-4a97-a427-c75501bdbd73" message="# Received Request for raising java exception #"/>
+		<flow-ref doc:name="Flow Reference" doc:id="70090b8b-b236-4c2c-984c-af1cf40c9ca5" name="http-reconnection-test-java-exception"/>
+		<logger level="INFO" doc:name="Logger" doc:id="440c8c93-5899-4032-9186-66f2b8796054" message="# Flow Completed #"/>
+	</flow>
+	<flow name="http-reconnection-test-java-exception" doc:id="972e80dd-13f5-436c-9c77-5fb7ce5cbcb4" >
+		<java:invoke-static class="com.test.ThrowException" method="raiseException(String)" >
+			<java:args ><![CDATA[#[{
+	"arg0": "test exception from java raised"
+}]]]></java:args>
+		</java:invoke-static>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bb11cd67-14eb-4496-bf81-79008c4f894e" type="JAVA:INVOCATION" when='#[error.exception.cause.target.class contains "MyException" ]'>
+				<logger level="INFO" doc:name="Logger" doc:id="0bfb2173-043b-42d2-8238-05748abee888" message="## Java Exception Thrown ##"/>
+				<ee:transform doc:name="Transform Message" doc:id="402bbd30-fda4-4719-8e76-91b27f7108d6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	error: error.exception.cause.target.detailMessage
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+			<on-error-propagate enableNotifications="true" logException="true">
+				<logger level="INFO" message="Error in executing java component" />
+			</on-error-propagate> 
+		</error-handler>
+	</flow>
+</mule>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8b281dab-2dfb-4ca5-ad24-2bebee17115d" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<flow name="exception-handling-test-outofmemory-mule4Flow" doc:id="3d1b5530-4503-4f70-aa07-5b2421eaa4d7" >
+		<http:listener doc:name="Listener" doc:id="504fa077-579e-4737-9b76-fb9c39882e85" config-ref="HTTP_Listener_config" path="/oom"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9b0e0c3f-2e42-4711-8834-0583ac20e608" message="## Received Request for Exception Handling - Out of Memory Test ##"/>
+		<flow-ref doc:name="Flow Reference" doc:id="87495284-55b1-41fa-813a-bf6d6078f0b5" name="raise-out-of-memory-issue"/>
+		<logger level="INFO" doc:name="Logger" message="Flow Execution Completed" />
+	</flow>
+	<flow name="raise-out-of-memory-issue" doc:id="12368d16-6ae0-480e-a64e-d64d3d6cd50e" >
+		<logger level="INFO" doc:name="Logger" message="Before Calling fillMemory" />
+		<java:invoke-static doc:name="Invoke static" doc:id="12546fb7-2f97-4163-a342-3dde7404496e" class="com.test.OutOfMemoryComponent" method="fillMemory()"/>
+		<logger level="INFO" doc:name="Logger" message="After Calling fillMemory" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="1af16b22-93bd-45a6-a56f-bdeb477ba09a" >
+				<logger level="INFO" doc:name="Logger" doc:id="b389c3e9-3d91-4d97-a7d8-b2e494947a7f" message="On Error Continue Called"/>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
