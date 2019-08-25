@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+
+
+	<flow name="object-store-with-java-objectFlow" doc:id="d4b002eb-0efd-44b4-8a11-661c02f13883">
+		<http:listener doc:name="Listener"
+			doc:id="440bb2de-7de1-46be-8886-2f5bc981d185" config-ref="HTTP_Listener_config"
+			path="/os4DefaultWriteJava" outputMimeType="application/json" />
+		<logger level="INFO" doc:name="Logger"
+			doc:id="d3d328b2-d330-428a-b1b2-989db3419f88"
+			message="# Received Request for Object Store with Default Option and store Java Payload: #[payload]"/>
+
+		<java:new doc:name="New" doc:id="e77b2cf4-51d7-48af-bc82-f348b74fb44f" class="com.test.Employee" constructor="Employee(String, String)">
+			<java:args>
+				<![CDATA[#[{
+				arg0: payload.name ++ "_asKey",
+				arg1: payload.id
+				}]]]>
+			</java:args>
+		</java:new>
+		
+		<os:store key="#[payload.name]">
+			<os:value><![CDATA[#[payload]]]></os:value>
+		</os:store>
+	
+	    <os:retrieve key="#[payload.name]" target="retrivedObject" />
+	    
+	    <logger level="INFO" message="Retrieved Object: #[vars.retrivedObject]" />
+	    
+	    <set-payload value="#[vars.retrivedObject]"/>
+</flow>
+
+
+</mule>
