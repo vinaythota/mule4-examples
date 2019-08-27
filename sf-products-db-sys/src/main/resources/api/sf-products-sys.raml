@@ -1,0 +1,19 @@
+#%RAML 1.0
+version: v1
+title: sf-products-sys
+
+/products:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              [
+                {
+                  "id": 1
+                },
+                {
+                  "id": 2
+                }
+              ]

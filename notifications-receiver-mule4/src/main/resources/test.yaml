@@ -1,0 +1,6 @@
+http:
+  port: "9091"
+
+basePath: "notificationReceiver"
+
+resourcePath: "v2/analytics/events"

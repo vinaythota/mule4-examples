@@ -1,0 +1,1171 @@
+[INFO] Scanning for projects...
+[WARNING] The POM for org.apache.maven.plugins:maven-site-plugin:jar:3.6.1 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-site-plugin:3.6.1: Plugin org.apache.maven.plugins:maven-site-plugin:3.6.1 or one of its dependencies could not be resolved: Failure to find org.apache.maven.plugins:maven-site-plugin:jar:3.6.1 in https://repository.mulesoft.org/nexus/content/repositories/public was cached in the local repository, resolution will not be reattempted until the update interval of mule-public has elapsed or updates are forced
+[INFO] 
+[INFO] ----------------< com.vinay:notifications-sender-mule4 >----------------
+[INFO] Building notifications-receiver-mule4 1.0.0-SNAPSHOT
+[INFO] --------------------------[ mule-application ]--------------------------
+[WARNING] The POM for org.apache.maven.plugins:maven-site-plugin:jar:3.6.1 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.apache.maven.plugins:maven-site-plugin:3.6.1: Plugin org.apache.maven.plugins:maven-site-plugin:3.6.1 or one of its dependencies could not be resolved: Failure to find org.apache.maven.plugins:maven-site-plugin:jar:3.6.1 in https://repository.mulesoft.org/nexus/content/repositories/public was cached in the local repository, resolution will not be reattempted until the update interval of mule-public has elapsed or updates are forced
+[INFO] 
+[INFO] --- maven-help-plugin:3.2.0:describe (default-cli) @ notifications-sender-mule4 ---
+[INFO] org.mule.tools.maven:mule-maven-plugin:3.2.7
+
+Name: Mule Maven Plugin
+Description: (no description available)
+Group Id: org.mule.tools.maven
+Artifact Id: mule-maven-plugin
+Version: 3.2.7
+Goal Prefix: mule
+
+This plugin has 17 goals:
+
+mule:clean
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.CleanMojo
+  Language: java
+  Bound to phase: clean
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:compile
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.CompileMojo
+  Language: java
+  Bound to phase: compile
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:deploy
+  Description: Maven plugin to deploy Mule applications to different kind of
+    servers: Standalone (both Community and Enterprise), Clustered, Anypoint
+    Runtime Manager, CloudHub and Runtime Fabric. Main uses are running
+    integration tests and deploying applications. Some of the features are:
+    Download Mule Standalone from a Maven Repository and install it locally.
+    Deploy a Mule application to a server. Undeploy a Mule application.
+    Assemble a Mule cluster and deploy applications.
+  Implementation: org.mule.tools.maven.mojo.deploy.DeployMojo
+  Language: java
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:generate-resources
+  Description: Mojo that runs on the LifecyclePhase.GENERATE_RESOURCES
+  Implementation: org.mule.tools.maven.mojo.GenerateResourcesMojo
+  Language: java
+  Bound to phase: generate-resources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:generate-sources
+  Description: Mojo that runs on the LifecyclePhase.GENERATE_RESOURCES
+  Implementation: org.mule.tools.maven.mojo.GenerateSourcesMojo
+  Language: java
+  Bound to phase: generate-sources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:generate-test-resources
+  Description: Build a Mule application archive.
+  Implementation: org.mule.tools.maven.mojo.GenerateTestResourcesMojo
+  Language: java
+  Bound to phase: generate-test-resources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:generate-test-sources
+  Description: Build a Mule application archive.
+  Implementation: org.mule.tools.maven.mojo.GenerateTestSourcesMojo
+  Language: java
+  Bound to phase: generate-test-sources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:initialize
+  Description: It creates all the required folders in the
+    project.build.directory
+  Implementation: org.mule.tools.maven.mojo.InitializeMojo
+  Language: java
+  Bound to phase: initialize
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:package
+  Description: Build a Mule application archive.
+  Implementation: org.mule.tools.maven.mojo.PackageMojo
+  Language: java
+  Bound to phase: package
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    attachMuleSources (Default: ${attachMuleSources})
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    onlyMuleSources (Default: ${onlyMuleSources})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:process-classes
+  Description: Post process the generated files from compilation, which in
+    this case will be the mule-artifact.json from the compiled java classes
+    plus any other resource already copied to the output directory.
+  Implementation: org.mule.tools.maven.mojo.ProcessClassesMojo
+  Language: java
+  Bound to phase: process-classes
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:process-resources
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.ProcessResourcesMojo
+  Language: java
+  Bound to phase: process-resources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:process-sources
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.ProcessSourcesMojo
+  Language: java
+  Bound to phase: process-sources
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipPluginCompatibilityValidation (Default:
+    ${skipPluginCompatibilityValidation})
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:site
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.SiteMojo
+  Language: java
+  Bound to phase: site
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:test-compile
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.TestCompileMojo
+  Language: java
+  Bound to phase: test-compile
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:undeploy
+  Description: Undeploys all the applications on a Mule Runtime Standalone
+    server, regardless of whether it was started using start or deploy goals.
+  Implementation: org.mule.tools.maven.mojo.deploy.UndeployMojo
+  Language: java
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:validate
+  Description: It creates all the required folders in the
+    project.build.directory
+  Implementation: org.mule.tools.maven.mojo.ValidateMojo
+  Language: java
+  Bound to phase: validate
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+mule:verify
+  Description: (no description available)
+  Implementation: org.mule.tools.maven.mojo.VerifyMojo
+  Language: java
+  Bound to phase: verify
+
+  Available parameters:
+
+    additionalPluginDependencies
+      (no description available)
+
+    agentDeployment
+      (no description available)
+
+    armDeployment
+      (no description available)
+
+    classifier
+      (no description available)
+
+    cloudHubDeployment
+      (no description available)
+
+    clusterDeployment
+      (no description available)
+
+    disableSemver (Default: ${disableSemver})
+      (no description available)
+
+    lightweightPackage (Default: ${lightweightPackage})
+      (no description available)
+
+    outputDirectory
+      Required: true
+      User property: project.build.directory
+      (no description available)
+
+    project
+      Required: true
+      User property: project
+      (no description available)
+
+    projectBaseFolder (Default: ${project.basedir})
+      (no description available)
+
+    projectBuildDirectory (Default: ${projectBuildDirectory})
+      (no description available)
+
+    runtimeFabricDeployment
+      (no description available)
+
+    sharedLibraries
+      User property: shared.libraries
+      (no description available)
+
+    skipValidation (Default: ${skipValidation})
+      (no description available)
+
+    standaloneDeployment
+      (no description available)
+
+    strictCheck (Default: ${strictCheck})
+      (no description available)
+
+    testJar (Default: ${testJar})
+      (no description available)
+
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 6.347 s
+[INFO] Finished at: 2019-08-26T11:40:21+05:30
+[INFO] ------------------------------------------------------------------------
