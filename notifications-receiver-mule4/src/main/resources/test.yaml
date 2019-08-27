@@ -4,3 +4,8 @@ http:
 basePath: "notificationReceiver"
 
 resourcePath: "v2/analytics/events"
+
+
+output:
+  directory: /tmp
+  filePrefix: analytics

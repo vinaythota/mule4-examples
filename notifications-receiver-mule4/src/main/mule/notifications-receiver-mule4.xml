@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	
 	<flow name="notifications-receiver-mule4Flow" doc:id="028cadcb-8582-4d09-a510-8143dc481c28" >
 		<http:listener doc:name="Listener" doc:id="215c763e-035b-48d9-955b-7da1adbef7e3" 
 				config-ref="http_listener_config"
 				path="/${resourcePath}" />
-		<ee:transform doc:id="e0e5b174-c4d3-4ba4-b957-6ca307802b72">
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="24dc77d2-dc15-42c3-b823-e3ebd3abe50c" message="Received a notification: #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="24dc77d2-dc15-42c3-b823-e3ebd3abe50c" message="Received a notification: #[payload]" />
+		<file:write doc:name="Write Analytics To File" doc:id="c0a97b45-0426-450e-a063-1c08258171dc" config-ref="File_Config_ToWrite" path="${output.filePrefix}-#[now()]"/>
 	</flow>
 </mule>
