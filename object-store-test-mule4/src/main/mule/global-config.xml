@@ -7,7 +7,7 @@
 	
 	<ee:object-store-caching-strategy name="Caching_Strategy_NonPersistent" doc:name="Caching Strategy" doc:id="3c195d0c-5fa3-4a4a-9704-7775ec72fab9" objectStore="myStoreNonPersistent"/>
 	
-	<ee:object-store-caching-strategy name="Caching_Strategy_Persistent" doc:name="Caching Strategy" doc:id="da31eb78-4bda-4f74-8b39-aeb82487eac5" objectStore="myStorePersistent"/>
+	<ee:object-store-caching-strategy name="Caching_Strategy_Persistent" doc:name="Caching Strategy" doc:id="da31eb78-4bda-4f74-8b39-aeb82487eac5" objectStore="myStorePersistent" keyGenerationExpression="#[payload]"/>
 	
 	<ee:object-store-caching-strategy name="Caching_Strategy_Persistent_Private" doc:name="Caching Strategy" doc:id="12f1c188-a38f-4754-930c-0fb2d163a784">
 		<os:private-object-store alias="myPrivateStorePersistent" persistent="true" /> 

@@ -11,7 +11,15 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	</http:listener-config>
 	<flow name="object-store-test-mule4-default" doc:id="0e351ba6-48dd-4ac2-ae64-a45f5befd0d8" >
 		<http:listener doc:name="Listener" doc:id="6d39a6c1-d4c8-4a01-95b8-11f75247025e" config-ref="HTTP_Listener_config" path="/cacheDefault4"/>
-		<logger level="INFO" doc:name="Logger" doc:id="b572543b-c6a9-4661-a085-2be01c5df869" message="# Received Request for Cache Default 4 ##  Payload: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="06930281-1c3f-46c6-bfb9-f77c9092e27c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b572543b-c6a9-4661-a085-2be01c5df869" message="# Received Request for Cache Default 4, Conveted Payload to Java:#[payload]"/>
 		<ee:cache doc:name="Cache" doc:id="d0e1f8d2-0c90-48cb-9ac3-45a7b302d085" >
 			<logger level="INFO" doc:name="Logger" doc:id="78e82be7-c920-4d84-a9f8-8bbfd2590864" message="# Cache miss for Cache Default ## " />
 			<set-payload value="#[output application/json --- 'Cache Default 4' + [ payload ]]" doc:name="Set Payload" doc:id="b125472a-624f-4549-a939-2aa270686192" />
@@ -20,7 +28,15 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	
 	<flow name="object-store-test-non-persistent" doc:id="49161718-de30-487a-afdc-1b5bb81f8ddd" >
 		<http:listener doc:name="Listener" doc:id="bb63016e-c657-4d74-943e-bc4b34f41981" config-ref="HTTP_Listener_config" path="/cacheNonPers"/>
-		<logger level="INFO" doc:name="Logger" doc:id="4d52a56b-1913-44aa-88ea-83322cc3d262" message="# Received Request for Cache Non Persistent##  Payload: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="8b348a14-7db6-4ea0-a4c4-34a683af5559" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4d52a56b-1913-44aa-88ea-83322cc3d262" message="# Received Request for Cache Non Persistent, Conveted Payload to Java:#[payload]"/>
 		<ee:cache doc:name="Cache" doc:id="743adb57-bf64-4a6a-88dd-a36ec4249a74" cachingStrategy-ref="Caching_Strategy_NonPersistent" >
 			<logger level="INFO" doc:name="Logger" doc:id="315e4712-85c2-45eb-a746-338e4a631944" message="# Cache miss for Cache Non Persistent ## " />
 			<set-payload value="#[output application/json --- 'Cache Non Persistent' + [ payload ]]" doc:name="Set Payload" doc:id="017fe1ad-16d1-4ac8-a7db-d33c3753ebfe" />
@@ -29,7 +45,15 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	
 	<flow name="object-store-test-mule4-persistent" doc:id="8e1eb349-9377-4cc6-a62a-b09c37ab5680" >
 		<http:listener doc:name="Listener" doc:id="945ccdb6-3706-4711-a7ac-25dd2e978646" config-ref="HTTP_Listener_config" path="/cachePers"/>
-		<logger level="INFO" doc:name="Logger" doc:id="195845a1-ecb4-42aa-a45a-c9ce411f2ddd" message="# Received Request for Cache Persistent ##  Payload: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="61dfc318-a78a-479a-948b-fd3c2ffdca03" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="195845a1-ecb4-42aa-a45a-c9ce411f2ddd" message="# Received Request for Cache Persistent, Conveted Payload to Java:#[payload]" />
 		<ee:cache doc:name="Cache" doc:id="34b9549e-86ec-4112-9883-2293c143a63b" cachingStrategy-ref="Caching_Strategy_Persistent" >
 			<logger level="INFO" doc:name="Logger" doc:id="a622a7a3-d187-44a6-8a17-3e5ddb4e8991" message="# Cache miss for Cache Persistent ## " />
 			<set-payload value="#[output application/json --- 'Cache Persistent' + [ payload ]]" doc:name="Set Payload" doc:id="0bc0f234-cddf-4e46-bc59-7d90a80e2573" />
@@ -38,7 +62,15 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	
 	<flow name="object-store-test-mule4-persistent-private-os" doc:id="e70f8b38-4354-47fd-a26a-d5e4863c4273" >
 		<http:listener doc:name="Listener" doc:id="3edef4bc-def3-48a3-98ff-d21054fb63fc" config-ref="HTTP_Listener_config" path="/cachePersPrivate"/>
-		<logger level="INFO" doc:name="Logger" doc:id="cf2db40a-8533-40c6-9dd9-a253161b4687" message="# Received Request for Cache Persistent with private OS ##  Payload: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="f3091785-1744-4a03-a049-3f2837866b3a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="cf2db40a-8533-40c6-9dd9-a253161b4687" message="# Received Request for Cache Persistent with private OS, Conveted Payload to Java:#[payload]"/>
 		<ee:cache doc:name="Cache" doc:id="e992f67a-0ea0-42bd-a483-8197ebe408da" cachingStrategy-ref="Caching_Strategy_Persistent_Private" >
 			<logger level="INFO" doc:name="Logger" doc:id="f06b8fc1-06ad-48db-989c-b29cbc15ede4" message="# Cache miss for Cache Persistent with private OS ## " />
 			<set-payload value="#[output application/json --- 'Cache Persistent with private OS' + [ payload ]]" doc:name="Set Payload" doc:id="a99281f2-a331-4ef5-abd8-33e86284e4a0" />
