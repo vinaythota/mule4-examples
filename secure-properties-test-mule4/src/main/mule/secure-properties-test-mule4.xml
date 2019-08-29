@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="secure-properties-test-mule4Flow" doc:id="7993b566-820e-4372-b453-ddcb812c4d41" >
+		<http:listener doc:name="Listener" doc:id="c731dd3e-7196-4c4a-ad5e-c35344e51bce" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3d77a6fc-bad2-4261-8fb5-8c4d4182cce5" message="## Received Request. Secret Code: ${secretCodeUsingSecureProperties} ##"/>
+		<ee:transform doc:name="Transform Message" doc:id="5e1467f3-6320-48ae-afa0-3071d6edc2d8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::Runtime
+output application/json
+---
+{
+	secretCodeUsingSecureProperties : p('secretCodeUsingSecureProperties'),
+	username: p('secure::username'),
+	password: p('secure::password')
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+</mule>

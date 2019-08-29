@@ -1,0 +1,2 @@
+java -jar secure-properties-tool.jar file encrypt AES CBC "test123456789123" secure-dev.yaml secure-prod.yaml
+-Denv=dev -Dkey.used.to.encrypt=test123456789123

@@ -1,0 +1,4 @@
+{
+  "minMuleVersion": "4.2.1",
+  "secureProperties": ["secretCodeUsingSecureProperties"]
+}

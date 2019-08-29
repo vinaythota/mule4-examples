@@ -4,20 +4,13 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="50831087-8690-4dc6-a0e5-f4ee9b310d9f" >
-		<db:my-sql-connection host="localhost" port="3306" user="odp" password="odp123" database="odp">
-			<reconnection failsDeployment="true">
-				<reconnect count="3" />
-			</reconnection>
-		</db:my-sql-connection>
-	</db:config>
 	<flow name="database-test-mule4Flow" doc:id="04bc0357-5e4f-47c5-8b81-de459af4b88d" >
 		<scheduler doc:name="Scheduler" doc:id="d562f678-fe40-43d4-993c-62f040022e9b" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="60" timeUnit="SECONDS"/>
+				<fixed-frequency frequency="${schdulerFrequencyInSeconds}" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<db:select doc:name="Select" doc:id="95c83d48-ba6c-4630-97eb-505b029f11a6" config-ref="Database_Config" maxRows="100">
+		<db:select doc:name="Select" doc:id="95c83d48-ba6c-4630-97eb-505b029f11a6" config-ref="Database_Config_MySQL" maxRows="${query.maxRows}" fetchSize="${query.fetchSize}">
 			<db:sql >select * from employee;</db:sql>
 		</db:select>
 		<foreach doc:name="For Each" doc:id="d1cd1094-78e3-4e70-9e02-12c1d522f23a" >

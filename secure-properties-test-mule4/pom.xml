@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>object-store-test-mule4</artifactId>
+	<artifactId>secure-properties-test-mule4</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>mule-application</packaging>
 
-	<name>object-store-test-mule4</name>
+	<name>secure-properties-test-mule4</name>
 
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,20 +25,9 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-				<classifier>mule-application</classifier>
-                </configuration>
+				</configuration>
 			</plugin>
-		<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <compilerArgs>
-                        <args>-parameters</args>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -55,27 +44,15 @@
             <classifier>mule-plugin</classifier>
         </dependency>
 		<dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-objectstore-connector</artifactId>
-            <version>1.1.0</version>
+            <groupId>9662b305-06ff-49bf-82b0-ee007455e296</groupId>
+            <artifactId>json-logger</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     	<dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-vm-connector</artifactId>
-            <version>1.1.1</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-    	<dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-jms-connector</artifactId>
+            <groupId>com.mulesoft.modules</groupId>
+            <artifactId>mule-secure-configuration-property-module</artifactId>
             <version>1.2.0</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-    	<dependency>
-            <groupId>org.mule.module</groupId>
-            <artifactId>mule-java-module</artifactId>
-            <version>1.2.4</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     </dependencies>
