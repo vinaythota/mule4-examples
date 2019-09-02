@@ -3,17 +3,15 @@
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="sf-product-sys-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="sf-product-sys-config" raml="sf-product-sys.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="sf-product-sys-main">
         <http:listener config-ref="sf-product-sys-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="sf-product-sys-config" />
@@ -167,13 +165,13 @@ output application/json
     </flow>
     <flow name="post:\products:application\json:sf-product-sys-config">
         <logger level="INFO" message="post:\products:application\json:sf-product-sys-config" />
-		<scripting:execute doc:name="sleep for wait time" doc:id="ebccfa0b-d410-41c1-8fe2-f8a2fd6ef6b3" engine="groovy">
-			<scripting:code >Thread.sleep(${waitTime.for.post.in.millis});</scripting:code>
+		<scripting:execute doc:name="sleep for wait time" doc:id="ebccfa0b-d410-41c1-8fe2-f8a2fd6ef6b3" engine="groovy" target="none">
+			<scripting:code >Thread.sleep(${waitTimeForPostInMillis});</scripting:code>
 		</scripting:execute>
 		<ee:transform doc:name="Transform Message" doc:id="725401f4-8c44-4993-b73c-57cb80183b4a" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
 {
 	"message" : "Product: " ++ payload.productId ++
