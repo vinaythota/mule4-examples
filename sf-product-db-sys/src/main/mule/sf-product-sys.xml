@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
-    <http:listener-config name="sf-products-sys-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8085" />
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="sf-product-sys-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="sf-products-sys-config" raml="sf-products-sys.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="sf-products-sys-main">
-        <http:listener config-ref="sf-products-sys-httpListenerConfig" path="/api/*">
+    <apikit:config name="sf-product-sys-config" raml="sf-product-sys.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="sf-product-sys-main">
+        <http:listener config-ref="sf-product-sys-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="sf-products-sys-config" />
+        <apikit:router config-ref="sf-product-sys-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -94,8 +98,8 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="sf-products-sys-console">
-        <http:listener config-ref="sf-products-sys-httpListenerConfig" path="/console/*">
+    <flow name="sf-product-sys-console">
+        <http:listener config-ref="sf-product-sys-httpListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -104,7 +108,7 @@ output application/json
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="sf-products-sys-config" />
+        <apikit:console config-ref="sf-product-sys-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -121,22 +125,61 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\products:sf-products-sys-config">
-        <logger level="INFO" doc:name="Logger" doc:id="36c04875-2947-4bb8-9bab-d2ba7d307f85" message="## Received Request for products: #[payload]"/>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="e930d4da-7756-454e-a30a-b2b4c3166e07">
+    <flow name="get:\products:sf-product-sys-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="d947d64a-479e-46c9-81bc-25f03f18c1fd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 [
   {
-    id: 1000001
+    productId: "PROD1-DB",
+    name: "Product 1-DB",
+    price: 1000
   }, 
   {
-    id: 102111111
+    productId: "PROD2-DB",
+    name: "Product 2-DB",
+    price: 2000
   }
 ]]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+    </flow>
+    <flow name="get:\products\(productId):sf-product-sys-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="0f96714f-08dc-4109-bc5c-ef1a441f9aec">
+            <ee:variables>
+                <ee:set-variable variableName="productId"><![CDATA[attributes.uriParams.productId]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="3f8a5689-d213-4101-8806-8cdf691dfaf2">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  productId: "PROD1-DB",
+  name: "Product 1-DB",
+  price: 1000
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\products:application\json:sf-product-sys-config">
+        <logger level="INFO" message="post:\products:application\json:sf-product-sys-config" />
+		<scripting:execute doc:name="sleep for wait time" doc:id="ebccfa0b-d410-41c1-8fe2-f8a2fd6ef6b3" engine="groovy">
+			<scripting:code >Thread.sleep(${waitTime.for.post.in.millis});</scripting:code>
+		</scripting:execute>
+		<ee:transform doc:name="Transform Message" doc:id="725401f4-8c44-4993-b73c-57cb80183b4a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"message" : "Product: " ++ payload.productId ++
+					 " inserted successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
 </mule>

@@ -4,7 +4,8 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
-	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="d2171fd6-e186-4f6a-998e-69f5ac389d78" flowRef="sf-products-sys-main" />
+	
+	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="d2171fd6-e186-4f6a-998e-69f5ac389d78" flowRef="sf-product-sys-main" />
 
 	<configuration-properties file="test.yaml" />
 </mule>
