@@ -1,0 +1,72 @@
+#%RAML 1.0
+version: v1
+title: sf-customer-sys
+
+uses:
+  Common-Types: sf-common-types.raml
+
+/customers:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Common-Types.Customer
+            example:
+              [
+                {
+                  "customerId" : "CUST-1",
+                  "name": "name-1",
+                  "address": {
+                    "street": "street 1",
+                    "city": "city 1",
+                    "postalCode" : "pc 1",
+                    "country": "IN"
+                  }
+                },
+                {
+                  "customerId" : "CUST-2",
+                  "name": "name-2",
+                  "address": {
+                    "street": "street 2",
+                    "city": "city 2",
+                    "postalCode" : "pc 2",
+                    "country": "IN"
+                  }
+                }
+              ]
+
+  /{customerId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Common-Types.Customer
+              example:
+                {
+                  "customerId" : "CUST-1",
+                  "name": "name-1",
+                  "address": {
+                    "street": "street 1",
+                    "city": "city 1",
+                    "postalCode" : "pc 1",
+                    "country": "IN"
+                  }
+                }
+  post:
+    body:
+      application/json:
+        type: Common-Types.Customer
+        example:
+          {
+            "customerId" : "CUST-1",
+            "name": "name-1",
+            "address": {
+              "street": "street 1",
+              "city": "city 1",
+              "postalCode" : "pc 1",
+              "country": "IN"
+            }
+          }

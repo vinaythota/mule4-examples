@@ -1,0 +1,7 @@
+http:
+  port: "8085"
+
+api:
+  id: "15792267"
+
+waitTimeForPostInMillis: "1000"

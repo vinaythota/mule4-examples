@@ -1,0 +1,89 @@
+#%RAML 1.0
+version: v1
+title: sf-order-sys
+
+uses:
+  Common-Types: sf-common-types.raml
+
+/orders:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Common-Types.Order
+            example:
+              [
+                {
+                  "orderId" : "ORDER-1",
+                  "customerId": "CUST-1",
+                  "lineItems": [
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 1
+                    },
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 2
+                    }
+                  ]
+                },
+                {
+                  "orderId" : "ORDER-1",
+                  "customerId": "CUST-1",
+                  "lineItems": [
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 3
+                    },
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 4
+                    }
+                  ]
+                }
+              ]
+
+  /{orderId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Common-Types.Order
+              example:
+                {
+                  "orderId" : "ORDER-1",
+                  "customerId": "CUST-1",
+                  "lineItems": [
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 1
+                    },
+                    {
+                      "productId": "PRD-1",
+                      "quantity": 2
+                    }
+                  ]
+                }
+                
+  post:
+    body:
+      application/json:
+        type: Common-Types.Order
+        example:
+          {
+            "orderId" : "ORDER-1",
+            "customerId": "CUST-1",
+            "lineItems": [
+              {
+                "productId": "PRD-1",
+                "quantity": 3
+              },
+              {
+                "productId": "PRD-1",
+                "quantity": 4
+              }
+            ]
+          }

@@ -1,0 +1,5 @@
+export anypoint_username="vinay_sep2019"
+export anypoint_password="Mule!o98"
+export org_id="vthota"
+
+mvn clean package mule:deploy "-Dgatekeeper=disabled" "-Dapi.id=12344567"
