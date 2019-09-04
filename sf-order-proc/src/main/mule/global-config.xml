@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd">
+	
+	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="d2171fd6-e186-4f6a-998e-69f5ac389d78" flowRef="sf-order-proc-main" />
+
+	<configuration-properties file="test.yaml" />
+	
+	<sf-order-sys:config name="Sf_order_sys_Config" 
+		doc:name="Sf-order-sys Config" 
+		doc:id="b6ad9d53-ac46-4a2e-b1a0-a0451ab1a157" 
+		property_host="${sf-order-db-sys.host}" 
+		property_port="${sf-order-db-sys.port}" 
+		property_protocol="${sf-order-db-sys.protocol}" 
+		property_basePath="${sf-order-db-sys.basePath}" />
+	
+</mule>
