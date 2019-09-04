@@ -15,8 +15,44 @@
 
 		<app.runtime>4.2.1</app.runtime>
 		<mule.maven.plugin.version>3.2.7</mule.maven.plugin.version>
+		
+		<username>${env.anypoint_username}</username>
+		<password>${env.anypoint_password}</password>
+		<org.id>${env.org_id}</org.id>
+		
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>DEV</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name>
+					<value>DEV</value>
+				</property>
+			</activation>
+			<properties>
+				<cloudhub.application.name>${project.artifactId}-${org.id}-dev</cloudhub.application.name>
+				<environment>Sandbox</environment>
+			</properties>
+		</profile>
+		
+		<profile>
+			<id>QA</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>QA</value>
+				</property>
+			</activation>
+			<properties>
+				<cloudhub.application.name>${project.artifactId}-${org.id}-qa</cloudhub.application.name>
+				<environment>UAT</environment>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -25,18 +61,25 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<classifier>mule-application</classifier>
+					<cloudHubDeployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<muleVersion>${app.runtime}</muleVersion>
+						<username>${username}</username>
+						<password>${password}</password>
+						<applicationName>${cloudhub.application.name}</applicationName>
+						<environment>${environment}</environment>
+						<properties>
+							<anypoint.platform.gatekeeper>${gatekeeper}</anypoint.platform.gatekeeper>
+							<api.id>${api.id}</api.id>
+						</properties>
+					</cloudHubDeployment>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-http-connector</artifactId>
-            <version>1.5.4</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-sockets-connector</artifactId>
@@ -53,6 +96,54 @@
             <groupId>3bf4102e-bf3a-4230-870e-4f1edbbc096a</groupId>
             <artifactId>mule-plugin-sf-order-sys</artifactId>
             <version>1.0.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <version>1.5.6</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>3bf4102e-bf3a-4230-870e-4f1edbbc096a</groupId>
+            <artifactId>mule-plugin-sf-products-sys</artifactId>
+            <version>1.0.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>3bf4102e-bf3a-4230-870e-4f1edbbc096a</groupId>
+            <artifactId>mule-plugin-sf-customer-sys</artifactId>
+            <version>1.0.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-vm-connector</artifactId>
+            <version>2.0.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-objectstore-connector</artifactId>
+            <version>1.1.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-file-connector</artifactId>
+            <version>1.2.0</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-aggregators-module</artifactId>
+            <version>1.0.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-jms-connector</artifactId>
+            <version>1.6.1</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     </dependencies>

@@ -168,8 +168,8 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 output application/json
 ---
 {
-  customerId: "Customer ID: " ++ vars.customerId,
-  name: "Customer Name: " ++ vars.customerId,
+  customerId:  vars.customerId,
+  name: "CustName" ++ vars.customerId,
   address: {
     street: "street 1 -DB",
     city: "city 1",

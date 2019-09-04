@@ -13,3 +13,14 @@ sf-order-db-sys:
   protocol: "HTTP"
   basePath: "/api"
   
+sf-product-db-sys:
+  host: sf-product-db-sys-vthota-dev.us-e2.cloudhub.io
+  port: "80"
+  protocol: "HTTP"
+  basePath: "/api"
+
+sf-customer-db-sys:
+  host: sf-customer-db-sys-vthota-dev.us-e2.cloudhub.io
+  port: "80"
+  protocol: "HTTP"
+  basePath: "/api"

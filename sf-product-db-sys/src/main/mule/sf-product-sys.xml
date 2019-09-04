@@ -156,7 +156,7 @@ output application/json
 output application/json
 ---
 {
-  productId: "Prod ID:" ++ vars.productId,
+  productId: vars.productId,
   name: "Product Name:" ++ vars.productId,
   price: 1000
 }]]></ee:set-payload>

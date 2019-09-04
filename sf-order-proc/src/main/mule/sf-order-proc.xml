@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="sf-order-proc-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
@@ -200,45 +201,7 @@ output application/json
                 <ee:set-variable variableName="orderId"><![CDATA[attributes.uriParams.orderId]]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="bd237519-18ac-4512-8232-6fb0fd539f9a">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  orderId: "ORDER-1",
-  customerDetails: {
-    customerId: "CUST-1",
-    name: "name-1",
-    address: {
-      street: "street 1",
-      city: "city 1",
-      postalCode: "pc 1",
-      country: "IN"
-    }
-  },
-  lineItems: [
-    {
-      productDetails: {
-        productId: "PROD1",
-        name: "Product 1",
-        price: 100
-      },
-      quantity: 1
-    }, 
-    {
-      productDetails: {
-        productId: "PROD2",
-        name: "Product 2",
-        price: 200
-      },
-      quantity: 2
-    }
-  ]
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-		<flow-ref doc:name="get-orders-implnFlow" doc:id="edf38f4f-4084-49da-94ae-0cf9528616e7" name="get-orders-implnFlow"/>
+		<flow-ref doc:name="get-order-implnFlow" doc:id="edf38f4f-4084-49da-94ae-0cf9528616e7" name="get-order-implnFlow"/>
     </flow>
     <flow name="post:\orders:application\json:sf-order-proc-config">
         <logger level="INFO" message="post:\orders:application\json:sf-order-proc-config" />

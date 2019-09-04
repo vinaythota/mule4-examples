@@ -1,12 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd">
+<mule xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/sf-product-sys http://www.mulesoft.org/schema/mule/sf-product-sys/current/mule-sf-product-sys.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/schema/mule/sf-customer-sys/current/mule-sf-customer-sys.xsd">
 	
-	<flow name="get-orders-implnFlow" doc:id="7a3a3fbf-7da0-45a9-9faf-36ff0a92405c" >
-		<sf-order-sys:get-order-by-order-id doc:name="Get order by order id" doc:id="491fdc6c-26d4-41e6-9b26-344b29c95885" config-ref="Sf_order_sys_Config" order-id="#[vars.orderId]"/>
-		<logger level="INFO" doc:name="Logger" doc:id="a9cfc0d8-81a4-4707-869e-1ea3f9c5cd9e" message="Response: #[payload]"/>
+	<vm:config name="VM_Config_ProductList" doc:name="VM Config" doc:id="e5c4fd4e-ac74-4a71-957f-872a6d99d367">
+		<vm:queues >
+			<vm:queue queueName="productList" />
+			<vm:queue queueName="productDetailsResponse" />
+		</vm:queues>
+	</vm:config>
+	<flow name="get-order-implnFlow" doc:id="7a3a3fbf-7da0-45a9-9faf-36ff0a92405c" >
+		<sf-order-sys:get-order-by-order-id doc:name="Get order by order id" doc:id="491fdc6c-26d4-41e6-9b26-344b29c95885" config-ref="Sf_order_sys_Config" order-id="#[vars.orderId]" target="orderDetailsSys"/>
+		<ee:transform doc:name="Transform Message" doc:id="46298ed4-543d-4341-9751-e5503d7c13e1">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="lineItemsSize"><![CDATA[%dw 2.0
+output application/java
+---
+sizeOf(vars.orderDetailsSys.lineItems)]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="get-products-details-flow" doc:id="5119596d-e2ef-4ab2-9df6-53c017b81db0" name="get-products-details-flow" target="productDetails" targetValue="#[payload]"/>
+		<flow-ref doc:name="get-customer-details-flow" doc:id="1e868f89-ac72-4050-9bbf-e5d93fc83ccf" name="get-customer-details-flow" target="customerDetails" targetValue="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="12e73265-2dbf-4a61-aa4f-912601f47c11" message="Order Sys Details: #[vars.orderDetailsSys], Product Details: #[vars.productDetails], Customer Details: #[vars.customerDetails]"/>
+		<ee:transform doc:name="Transform Message" doc:id="02d8098f-1c1d-4ee1-b6b4-cb9440d341e2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	orderId: vars.orderId,
+	customerDetails: vars.customerDetails,
+	lineItems: vars.productDetails
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
+	<flow name="get-customer-details-flow" doc:id="b032de97-c46b-4376-8df5-0b24d80d3d0f" >
+		<sf-customer-sys:get-customer-by-customer-id doc:name="Get customer by customer id" doc:id="89578be8-41f1-4825-8f4c-cd18d8d92c44" config-ref="Sf_customer_sys_Config" customer-id="#[vars.orderDetailsSys.customerId]"/>
+	</flow>
+	
+	<flow name="get-products-details-flow" doc:id="5d89fc58-65b2-4c73-bfe0-d2cbb330e686">
+		<foreach doc:name="For Each" doc:id="d1a27707-a430-4ca4-bc1e-776e4b877f41" collection="#[vars.orderDetailsSys.lineItems]">
+			<async doc:name="Async" doc:id="850865b1-2bf5-46df-a223-e5c5a8de5e19">
+				<flow-ref doc:name="get-product-details-sub-flow" doc:id="e2518719-74ca-43df-9332-c0997111bb45" name="get-product-details-sub-flow" />
+			</async>
+		</foreach>
+		<until-successful maxRetries="50" doc:name="Until Successful" doc:id="b88faaef-c035-43eb-a8d2-0a7a5c5b4824" millisBetweenRetries="1000">
+			<flow-ref doc:name="Flow Reference" doc:id="742b1db1-7d74-488d-8d02-21944821d183" name="get-aggregated-results" />
+		</until-successful>
+		<logger level="INFO" doc:name="Logger" doc:id="8aea1ee1-9477-49ae-9895-47085809de2f" message="Retrieved from Object Store: #[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="789d9ad7-f3f2-413d-9efe-d55cce4cd820">
+			<ee:message>
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+					<ee:variables>
+					</ee:variables>
+		</ee:transform>
+		<os:remove doc:name="Remove" doc:id="d046f994-3245-42fd-af2a-377f7c611dcc" key="#[correlationId]" />
+	</flow>
+	<flow name="get-product-details-sub-flow" doc:id="22e781ae-81dc-47f8-bd36-1cfb23ba78d9" >
+		<logger level="INFO" doc:name="Logger" doc:id="9df3a2f7-19fc-4bdb-9f39-11558c54bb28" message="before getting product details for: #[payload]"/>
+		<sf-product-sys:get-product-by-product-id doc:name="Get product by product id" doc:id="cfd98917-ff5b-4dfa-9826-19eef168260f" config-ref="Sf_product_sys_Config" product-id="#[payload.productId]" target="singleProductDetails"/>
+		<ee:transform doc:name="Transform Message" doc:id="0e9b3592-5265-4519-ad11-2c8e36488cec">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	productDetails: vars.singleProductDetails,
+	quantity: payload.quantity
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<aggregators:group-based-aggregator 
+			doc:name="Group based aggregator" 
+			doc:id="af3321f4-fe99-4227-8572-552ba554a6c0" 
+			name="Aggregate Product Details" 
+			groupSize="#[vars.lineItemsSize]">
+			<aggregators:incremental-aggregation >
+				<logger level="INFO" doc:name="Logger" doc:id="478700fe-3a29-433d-92ca-c26f04b984ea" message="Each Element; Payload: #[payload] "/>
+			</aggregators:incremental-aggregation>
+			<aggregators:aggregation-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="0f577cb2-c144-4391-b9fd-8c42ac5ff684" message="Aggregated Details; Payload: #[payload] , Flowvar: #[vars.productDetails]"/>
+				<os:store doc:name="Store" doc:id="caf5a962-8880-4d1f-bb1e-c17948057340" key="#[correlationId]"/>
+			</aggregators:aggregation-complete>
+		</aggregators:group-based-aggregator>
+	</flow>
+	<sub-flow name="get-aggregated-results" doc:id="8a2f526b-1ab1-4e92-a873-f8f726a448cf" >
+		<os:retrieve doc:name="Retrieve" doc:id="94a2cdf9-81f8-4c0e-92d9-1a84bb6966c9" key="#[correlationId]"/>
+	</sub-flow>
 </mule>

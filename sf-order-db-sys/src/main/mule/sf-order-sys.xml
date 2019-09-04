@@ -178,15 +178,15 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 output application/json
 ---
 {
-  orderId: "Order ID: " ++ vars.orderId,
-  customerId: "Customer ID: " ++ vars.orderId,
+  orderId: "ORD" ++ vars.orderId,
+  customerId: "CUST" ++ vars.orderId,
   lineItems: [
     {
-      productId: "Product ID: " ++ vars.orderId,
+      productId: "PRD1" ++ vars.orderId,
       quantity: 1
     }, 
     {
-      productId: "Product ID: " ++ vars.orderId,
+      productId: "PRD2" ++ vars.orderId,
       quantity: 2
     }
   ]
