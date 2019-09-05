@@ -26,6 +26,6 @@ sf-customer-db-sys:
   basePath: "/api"
   
 sf-standalone-app:
-  host: sf-sf-standalone-app-vthota-dev.us-e2.cloudhub.io
+  host: sf-standalone-app-vthota-dev.us-e2.cloudhub.io
   port: "80"
   path: "/standalone"
