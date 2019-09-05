@@ -24,3 +24,8 @@ sf-customer-db-sys:
   port: "80"
   protocol: "HTTP"
   basePath: "/api"
+  
+sf-standalone-app:
+  host: sf-sf-standalone-app-vthota-dev.us-e2.cloudhub.io
+  port: "80"
+  path: "/standalone"

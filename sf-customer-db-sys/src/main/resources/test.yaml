@@ -5,3 +5,5 @@ api:
   id: "15792267"
 
 waitTimeForPostInMillis: "1000"
+
+elementNoToFail: "5"

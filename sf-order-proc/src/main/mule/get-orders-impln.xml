@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys" xmlns:os="http://www.mulesoft.org/schema/mule/os"
-	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-	xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
@@ -10,7 +10,8 @@ http://www.mulesoft.org/schema/mule/sf-product-sys http://www.mulesoft.org/schem
 http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
 http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
-http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/schema/mule/sf-customer-sys/current/mule-sf-customer-sys.xsd">
+http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/schema/mule/sf-customer-sys/current/mule-sf-customer-sys.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	
 	<vm:config name="VM_Config_ProductList" doc:name="VM Config" doc:id="e5c4fd4e-ac74-4a71-957f-872a6d99d367">
 		<vm:queues >
@@ -18,6 +19,7 @@ http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/sche
 			<vm:queue queueName="productDetailsResponse" />
 		</vm:queues>
 	</vm:config>
+	
 	<flow name="get-order-implnFlow" doc:id="7a3a3fbf-7da0-45a9-9faf-36ff0a92405c" >
 		<sf-order-sys:get-order-by-order-id doc:name="Get order by order id" doc:id="491fdc6c-26d4-41e6-9b26-344b29c95885" config-ref="Sf_order_sys_Config" order-id="#[vars.orderId]" target="orderDetailsSys"/>
 		<ee:transform doc:name="Transform Message" doc:id="46298ed4-543d-4341-9751-e5503d7c13e1">
@@ -45,6 +47,10 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<async doc:name="Async" doc:id="7e674930-2b79-4579-a415-6d24a83eb89a" >
+			<http:request method="GET" doc:name="Request to Standalone App" doc:id="d450ad2a-00a6-42a5-8ccd-277f6329c996" path="${sf-standalone-app.path}" config-ref="HTTP_Request_configuration_StandaloneApp"/>
+			<logger level="INFO" doc:name="Logger" doc:id="da201206-6a03-4547-b69e-043bd84ed4e9" message="response from standalone app: #[payload]"/>
+		</async>
 	</flow>
 	<flow name="get-customer-details-flow" doc:id="b032de97-c46b-4376-8df5-0b24d80d3d0f" >
 		<sf-customer-sys:get-customer-by-customer-id doc:name="Get customer by customer id" doc:id="89578be8-41f1-4825-8f4c-cd18d8d92c44" config-ref="Sf_customer_sys_Config" customer-id="#[vars.orderDetailsSys.customerId]"/>
