@@ -1,0 +1,158 @@
+#%RAML 1.0
+version: v1
+title: sf-order-mobile-exp
+
+uses:
+  Common-Types: sf-common-types.raml
+  
+/orders:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Common-Types.OrderDetail
+            example:
+              [
+                {
+                  "orderId" : "ORDER-1",
+                  "customerDetails": {
+                    "customerId" : "CUST-1",
+                    "name": "name-1",
+                    "address": {
+                      "street": "street 1",
+                      "city": "city 1",
+                      "postalCode" : "pc 1",
+                      "country": "IN"
+                    }
+                  },
+                  "lineItems": [
+                    {
+                      "productDetails": {
+                        "productId": "PROD1",
+                        "name" : "Product 1",
+                        "price": 100
+                      },
+                      "quantity": 1
+                    },
+                    {
+                      "productDetails": {
+                        "productId": "PROD2",
+                        "name" : "Product 2",
+                        "price": 200
+                      },
+                      "quantity": 2
+                    }
+                  ]
+                },
+                {
+                  "orderId" : "ORDER-2",
+                  "customerDetails": {
+                    "customerId" : "CUST-2",
+                    "name": "name-2",
+                    "address": {
+                      "street": "street 2",
+                      "city": "city 2",
+                      "postalCode" : "pc 2",
+                      "country": "IN"
+                    }
+                  },
+                  "lineItems": [
+                    {
+                      "productDetails": {
+                        "productId": "PROD2",
+                        "name" : "Product 2",
+                        "price": 100
+                      },
+                      "quantity": 1
+                    },
+                    {
+                      "productDetails": {
+                        "productId": "PROD2",
+                        "name" : "Product 2",
+                        "price": 200
+                      },
+                      "quantity": 2
+                    }
+                  ]
+                }
+              ]
+
+
+  /{orderId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Common-Types.OrderDetail
+              example:
+                {
+                  "orderId" : "ORDER-1",
+                  "customerDetails": {
+                    "customerId" : "CUST-1",
+                    "name": "name-1",
+                    "address": {
+                      "street": "street 1",
+                      "city": "city 1",
+                      "postalCode" : "pc 1",
+                      "country": "IN"
+                    }
+                  },
+                  "lineItems": [
+                    {
+                      "productDetails": {
+                        "productId": "PROD1",
+                        "name" : "Product 1",
+                        "price": 100
+                      },
+                      "quantity": 1
+                    },
+                    {
+                      "productDetails": {
+                        "productId": "PROD2",
+                        "name" : "Product 2",
+                        "price": 200
+                      },
+                      "quantity": 2
+                    }
+                  ]
+                }
+                
+  post:
+    body:
+      application/json:
+        type: Common-Types.OrderDetail
+        example:
+          {
+            "orderId" : "ORDER-1",
+            "customerDetails": {
+            "customerId" : "CUST-1",
+            "name": "name-1",
+            "address": {
+                "street": "street 1",
+                "city": "city 1",
+                "postalCode" : "pc 1",
+                "country": "IN"
+              }
+            },
+            "lineItems": [
+              {
+                "productDetails": {
+                  "productId": "PROD1",
+                  "name" : "Product 1",
+                  "price": 100
+                },
+                "quantity": 1
+              },
+              {
+                "productDetails": {
+                    "productId": "PROD2",
+                    "name" : "Product 2",
+                    "price": 200
+                },
+                "quantity": 2
+              }
+            ]
+          }

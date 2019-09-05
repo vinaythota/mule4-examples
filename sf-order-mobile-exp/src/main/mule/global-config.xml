@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sf-order-proc="http://www.mulesoft.org/schema/mule/sf-order-proc" xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys"
+	xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys"
+	xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd
+http://www.mulesoft.org/schema/mule/sf-product-sys http://www.mulesoft.org/schema/mule/sf-product-sys/current/mule-sf-product-sys.xsd
+http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/schema/mule/sf-customer-sys/current/mule-sf-customer-sys.xsd
+http://www.mulesoft.org/schema/mule/sf-order-proc http://www.mulesoft.org/schema/mule/sf-order-proc/current/mule-sf-order-proc.xsd">
+	
+	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="d2171fd6-e186-4f6a-998e-69f5ac389d78" flowRef="sf-order-mobile-exp-main" />
+
+	<configuration-properties file="test.yaml" />
+		
+	<sf-order-proc:config name="Sf_order_proc_Config" 
+		doc:name="Sf-order-proc Config" 
+		doc:id="9b36f2b0-bc8a-43b6-bf32-f7f32ce4893b" 
+		property_host="${sf-order-proc.host}" 
+		property_port="${sf-order-proc.port}" 
+		property_protocol="${sf-order-proc.protocol}" 
+		property_basePath="${sf-order-proc.basePath}" />
+	
+	
+</mule>

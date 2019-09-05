@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sf-order-proc="http://www.mulesoft.org/schema/mule/sf-order-proc" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sf-order-proc http://www.mulesoft.org/schema/mule/sf-order-proc/current/mule-sf-order-proc.xsd">
+
+	<flow name="get-order-details-implFlow" doc:id="f5e8598a-421d-4bc7-840a-91445e82020f" >
+		<sf-order-proc:get-order-by-order-id doc:name="Get order by order id" doc:id="b4acec60-f874-4ba0-9354-23927fe075c9" order-id="#[vars.orderId]" config-ref="Sf_order_proc_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bf94edc4-1c1c-45e3-b71b-5141198e16b9" message="response from proc api: #[payload]"/>
+	</flow>
+</mule>

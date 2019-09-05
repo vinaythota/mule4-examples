@@ -1,0 +1,44 @@
+#%RAML 1.0 Library
+
+types:
+  Product:
+    properties:
+      productId: string
+      name: string
+      price: number
+  
+  Customer:
+    properties:
+      customerId: string
+      name: string
+      address:
+        type: object
+        properties:
+          street: string
+          city: string
+          postalCode: string
+          country: string
+  
+  Order:
+    properties:
+      orderId: string
+      customerId: string
+      lineItems: 
+        type: array
+        items: 
+          type: object
+          properties:
+            productId: string
+            quantity: integer
+
+  OrderDetail:
+    properties:
+      orderId: string
+      customerDetails: Customer
+      lineItems: 
+        type: array
+        items: 
+          type: object
+          properties:
+            productDetails: Product
+            quantity: integer
