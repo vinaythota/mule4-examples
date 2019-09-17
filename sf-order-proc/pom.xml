@@ -16,9 +16,9 @@
 		<app.runtime>4.2.1</app.runtime>
 		<mule.maven.plugin.version>3.2.7</mule.maven.plugin.version>
 		
-		<username>${env.anypoint_username}</username>
-		<password>${env.anypoint_password}</password>
-		<org.id>${env.org_id}</org.id>
+		<username>${env.AP_USERNAME}</username>
+		<password>${env.AP_PASSWORD}</password>
+		<org.id>${env.ORG_ID}</org.id>
 		
 	</properties>
 

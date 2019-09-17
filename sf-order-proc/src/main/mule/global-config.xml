@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys" xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys"
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:sf-customer-sys="http://www.mulesoft.org/schema/mule/sf-customer-sys" xmlns:sf-product-sys="http://www.mulesoft.org/schema/mule/sf-product-sys"
 	xmlns:sf-order-sys="http://www.mulesoft.org/schema/mule/sf-order-sys"
-	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
 http://www.mulesoft.org/schema/mule/sf-order-sys http://www.mulesoft.org/schema/mule/sf-order-sys/current/mule-sf-order-sys.xsd
 http://www.mulesoft.org/schema/mule/sf-product-sys http://www.mulesoft.org/schema/mule/sf-product-sys/current/mule-sf-product-sys.xsd
@@ -35,5 +37,9 @@ http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/sche
 		property_port="${sf-customer-db-sys.port}" 
 		property_protocol="${sf-customer-db-sys.protocol}" 
 		property_basePath="${sf-customer-db-sys.basePath}"/>
+	
+	<http:request-config name="HTTP_Request_configuration_StandaloneApp" doc:name="HTTP Request configuration" doc:id="0a95d107-991a-4ca8-85e5-d19a22089679" >
+		<http:request-connection host="${sf-standalone-app.host}" port="${sf-standalone-app.port}" />
+	</http:request-config>
 	
 </mule>

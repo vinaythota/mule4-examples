@@ -1,0 +1,6 @@
+${mq.client.app.id}" clientSecret="${mq.client.app.secret}" />
+
+mq:
+  clientAppId: ""
+  clientAppSecret: ""
+  queueName: "testQ"

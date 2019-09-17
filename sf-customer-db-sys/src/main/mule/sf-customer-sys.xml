@@ -156,12 +156,17 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="get:\customers\(customerId):sf-customer-sys-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="68b37062-0bf0-4d13-bc67-bd44699be044">
             <ee:variables>
-                <ee:set-variable variableName="customerId">attributes.uriParams.customerId</ee:set-variable>
+                <ee:set-variable variableName="customerId"><![CDATA[attributes.uriParams.customerId]]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+		<choice doc:name="Choice" doc:id="8ac37f2e-4231-4de4-beab-2b3d986fbc41" >
+			<when expression="#[mod(vars.customerId[4 to -1] as Number,p('elementNoToFail')) == 0]">
+				<raise-error doc:name="Raise error" doc:id="180a923b-5f77-457b-9bee-df2aca0a818d" type="MYTEST:INVALID_NUMBER" description="#['invalid number: ' ++ vars.customerId]"/>
+			</when>
+			<otherwise >
+				<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="cb445fbc-2161-43f1-a42f-11ab61829bff">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -179,6 +184,8 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+			</otherwise>
+		</choice>
     </flow>
     <flow name="post:\customers:application\json:sf-customer-sys-config">
         <logger level="INFO" message="post:\customers:application\json:sf-customer-sys-config" />
