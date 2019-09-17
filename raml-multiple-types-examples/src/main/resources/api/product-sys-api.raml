@@ -1,0 +1,32 @@
+#%RAML 1.0
+version: v1
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/3353d437-d424-435e-bf15-add3ea679a69/ # 
+title: product-sys-api
+
+types:
+  Person:
+    type: object
+    properties:
+      name: 
+        type: string
+        required: true
+      id:
+        type: string
+        required: true
+
+/products:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "jname" : "thota",
+                "jid" : "101"
+              }
+          application/xml:
+            type: Person
+            example:
+              name: "vinay"
+              id: "100"

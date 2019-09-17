@@ -13,7 +13,6 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 			</http:error-response>
 		</http:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="f555e2dd-d550-400c-b71f-61c3339fcb61" message="## Received Request, Payload: #[payload] ##"/>
-		<xml-module:xslt-transform doc:name="Xslt transform" doc:id="4bf7a723-fbad-455e-9391-9c1382369c86" />
 		<ee:transform doc:name="Transform Message" doc:id="f56ed63c-04e9-4641-bbe0-d321cf437c29" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -29,6 +28,8 @@ output application/java
 		<scatter-gather doc:name="Scatter-Gather" doc:id="83e2bd9c-32b4-4a66-a4d6-836d645786c0" >
 			<route>
 				<try doc:name="Try" doc:id="e7009d83-2138-4a85-ace0-cdfbe975fe30" >
+					<set-variable value="#['route1 variable']" doc:name="Set Variable" doc:id="0f979d94-82c1-45a9-90a4-b7fbe6247ff1" variableName="var1Route1"/>
+					<set-variable value="#[`common var in route1`]" doc:name="Set Variable" doc:id="a6c8b374-46d3-41df-9665-b57e1b97456f" variableName="commonVar"/>
 					<logger level="INFO" doc:name="Logger" doc:id="4022aa13-f1be-43c7-85df-1afd22ea1b5c" message="## Route 1 ##" />
 					<scripting:execute doc:name="Execute" doc:id="6da21645-83ca-4640-a4f4-bb29b10808d6" engine="groovy">
 					<scripting:code>payload.firstName='Routeer1';
@@ -37,9 +38,9 @@ return payload;</scripting:code>
 					<raise-error type="ANY:UNKNOWN" description="My Custom Exception" />
 					<error-handler >
 						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f177286a-7951-4d37-b9e7-cf586890fc58" type="ANY">
-							<ee:transform doc:name="Transform Message" doc:id="459c0d44-641e-4ca2-96cd-24b5fdd67775" >
-								<ee:message >
-									<ee:set-payload ><![CDATA[%dw 2.0
+							<ee:transform doc:name="Transform Message" doc:id="459c0d44-641e-4ca2-96cd-24b5fdd67775">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
 {
@@ -52,6 +53,8 @@ output application/java
 				</try>
 			</route>
 			<route >
+				<set-variable value="#['route2 variable']" doc:name="Set Variable" doc:id="17e3abea-4160-4db4-a903-1de8637f94c4" variableName="var1Route2"/>
+				<set-variable value="#[`common var in route2`]" doc:name="Set Variable" doc:id="0ecae783-43f1-4e6c-a765-885b73ec1acf" variableName="commonVar"/>
 				<logger level="INFO" doc:name="Logger" doc:id="85e60c6f-8e88-4456-889a-698e925d7df5" message="## Route 2 ##"/>
 				<scripting:execute doc:name="Execute" doc:id="aea44c0f-b87b-4094-b1b6-4ed07a0a7545" engine="groovy">
 					<scripting:code >payload.firstName='Routeeer2';
@@ -64,7 +67,10 @@ return payload;</scripting:code>
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload..payload]]></ee:set-payload>
+{
+	payloadAfterScatterGather: payload,
+	variablesAfterScatterGather: vars
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="773071fb-7829-40ae-b3f8-b426d94fa647" message="## Aggregated Payload: #[payload] ##"/>
