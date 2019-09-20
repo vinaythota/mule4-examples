@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="repeatable-streams-example-sequence" doc:id="6c40016e-8829-4217-960f-da90e0621980" >
+		<http:listener doc:name="Listener" doc:id="6008b7c7-db83-407c-a003-a5a602c80be3" config-ref="HTTP_Listener_config" path="/repeatable/sequence">
+		</http:listener>
+<!-- 		<logger level="INFO" doc:name="received request" doc:id="23cf32f9-1197-4244-aa42-d53b8046505f" message="received a request for non repetable stream test, payload: #[payload]"/>
+ -->		<set-variable value="#[payload]" doc:name="save original stream" doc:id="20b51b74-c224-4757-b1cc-feb8f53a0d84" variableName="originalPayload"/>
+		<ee:transform doc:name="Transform Message" doc:id="83b1b99c-cdfc-4ddb-884c-60a7c100d8f7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+(payload splitBy '\n') as Iterator ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload after DW" doc:id="69be5271-c557-497d-8b8b-2a4c8e52486a" message="with repetable stream, payload after dataweave: #[payload]"/>
+		<foreach doc:name="For Each" doc:id="41b5f91b-6356-4e61-b3e2-ba136db26377" >
+			<logger level="INFO" doc:name="Logger" doc:id="d29c06b3-70c7-42eb-8d7d-9ba0c83e00a9" message="with repetable stream, each record: #[payload]"/>
+		</foreach>
+		<logger level="INFO" doc:name="print original stream" doc:id="da17abb3-c4d4-4c95-bb1a-8f854bc9d3b0" message="with repetable stream, original stream: #[vars.originalPayload]"/>
+		<ee:transform doc:name="success response" doc:id="783495bb-3a19-411f-b3b3-751d895fbabf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "success from non repeatable test with sequence"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="repeatable-streams-example-scatter-gather-flow" doc:id="6c40016e-8829-4217-960f-da90e0621980" >
+		<http:listener doc:name="Listener" doc:id="6008b7c7-db83-407c-a003-a5a602c80be3" config-ref="HTTP_Listener_config" path="/repeatable/scatter-gather">
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="23cf32f9-1197-4244-aa42-d53b8046505f" message="received a request for repetable stream test..."/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="b3b9c447-1fcd-4fba-9653-bc17ecc2ecc9" >
+			<route >
+				<logger level="INFO" doc:name="route 1" doc:id="2b97ae26-bba3-4eb3-93c9-90361c55d3ac" message="with repetable stream, executing route 1, payload: #[payload]"/>
+			</route>
+			<route >
+				<logger level="INFO" doc:name="route 2" doc:id="c0bbf09d-67f2-4007-aeaf-3b159bdd38e7" message="with repetable stream, executing route 2, payload: #[payload]"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="success response" doc:id="783495bb-3a19-411f-b3b3-751d895fbabf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "success from non repeatable test, with scatter-gather"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
