@@ -1,0 +1,7 @@
+http:
+  port: "9091"
+
+server:
+  host: "localhost"
+  port: "9092"
+  path: "/httpStreamingTestServer"

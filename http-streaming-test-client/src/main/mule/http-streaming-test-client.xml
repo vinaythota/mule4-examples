@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+	<flow name="http-streaming-test-clientFlow" doc:id="870afd18-4438-4ae6-89b7-36f34a03c847" >
+		<http:listener doc:name="Listener" doc:id="771fbfd1-6725-448e-a3bb-80fe3978a220" config-ref="HTTP_Listener_config" path="/httpStreamingTestClient"/>
+		<logger level="INFO" doc:name="Logger" doc:id="55a28907-dde5-49d7-a13d-b355c3645ed5" message="Received a request to Http Streaming Test: #[payload]"/>
+		<http:request method="POST" doc:name="Request to server" doc:id="1f982413-eca8-4382-8692-ee2591681311" config-ref="HTTP_Request_configuration" path="${server.path}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3e232574-d0cb-4356-acd4-ff83caadf069" message="response from server: #[payload]"/>
+	</flow>
+	
+</mule>

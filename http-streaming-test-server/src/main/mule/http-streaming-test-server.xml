@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="http-streaming-test-serverFlow" doc:id="d37f41ce-677c-4f7c-aa98-55e90a674abc" >
+		<http:listener doc:name="Listener" doc:id="70b580b0-ba38-4e2e-84be-a243daa5525a" config-ref="HTTP_Listener_config" path="/httpStreamingTestServer"/>
+		<logger level="INFO" doc:name="Logger" doc:id="37996978-6872-4c2e-9a03-a7e70694f774" message="server received request: #[payload]"/>
+		<set-payload value="#[payload ++ ': response from server']" doc:name="Set Payload" doc:id="e2288077-7d3a-4506-9c5a-f8bedea572b3" />
+	</flow>
+</mule>
