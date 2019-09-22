@@ -1,0 +1,3 @@
+Vinay-Thotas-MacBook-Pro:bin vinay$ pwd
+/Applications/apache-jmeter-4.0/bin
+Vinay-Thotas-MacBook-Pro:bin vinay$ ./jmeter.sh -n -t /Users/vinay/Documents/WaveMoney/JMeterTests/VinayPlans/security-db-sys-test-plan.jmx -e -l test.log -o here
