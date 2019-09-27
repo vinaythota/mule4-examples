@@ -1,0 +1,14 @@
+Observations with On Table Row/Database listner:
+
+1. You can have water mark on different items like id (integer), name(string)
+
+2. As soon as the events are received to the flow, water mark data is updated
+
+3. Even though there is an exception while processing an event water mark data is not going to be updated
+
+4. Even if one of the event is taking more time, the next events will get delivered
+
+5. If we set max concurrency to 1 like below we always get one event/one record delivered
+
+<flow name="water-mark-db-testFlow1" doc:id="4d25ac90-ffef-4922-a266-002c650a068e" 
+	initialState="${mysql.listnerInitialState}" maxConcurrency="1">
