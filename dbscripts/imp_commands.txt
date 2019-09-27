@@ -1,7 +1,10 @@
-mysql -u test -ptest123 --database=test --execute="call insertEmployees(10,100)"
-mysql -u test -ptest123 --database=test < insertEmployees.sql
-
 #Ref: https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql
 CREATE USER 'test'@'localhost' IDENTIFIED BY 'test123';
 GRANT ALL PRIVILEGES ON * . * TO 'test'@'localhost';
 FLUSH PRIVILEGES
+
+mysql -u test -ptest123 --database=test < createInsertEmployeesProcedure.sql
+mysql -u test -ptest123 --database=test --execute="call insertEmployees(10,100)"
+
+mysql -u test -ptest123 --database=test < createInsertAccountsProcedure.sql
+mysql -u test -ptest123 --database=test --execute="call insertAccounts(10,100)"
