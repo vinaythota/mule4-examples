@@ -1,0 +1,12 @@
+http:
+  host: "0.0.0.0"
+  port: "9091"
+  sleepTimeInMillis: "120000"
+  maxConcurrency: "1"
+
+scheduler:
+  maxConcurrency: "1"
+  frequencyInMillis: "30000"
+  sleepTimeInMillis: "120000"
+  initialState: "started"
+  

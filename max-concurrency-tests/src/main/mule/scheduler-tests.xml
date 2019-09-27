@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<flow name="scheduler-testsFlow" doc:id="fb9fa312-cb51-4e20-9387-b044abe2256a" maxConcurrency="${scheduler.maxConcurrency}" initialState="${scheduler.initialState}">
+		<scheduler doc:name="Scheduler" doc:id="6cdaf2a6-47d5-458f-a29b-3d14025f1a57" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="${scheduler.frequencyInMillis}"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="started" doc:id="d8280687-cf96-4cf8-80b7-d2f9ef815b09" message="scheduler event started CorrelationID: #[correlationId]"/>
+		<scripting:execute engine="groovy" doc:name="sleep" doc:id="c47120b9-621e-44ec-90b6-2278210cdd9d" >
+			<scripting:code >Thread.sleep(${scheduler.sleepTimeInMillis});</scripting:code>
+		</scripting:execute>
+		<logger level="INFO" doc:name="completed" doc:id="6443c917-ec68-4334-92ab-3fe8892c7927" message="scheduler event completed, CorrelationID: #[correlationId]"/>
+	</flow>
+	
+	
+</mule>

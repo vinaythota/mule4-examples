@@ -1,0 +1,155 @@
+INFO  2019-09-27 11:55:19,021 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.AbstractFlowConstruct: Flow scheduler-testsFlow has not been started (initial state = 'stopped')
+INFO  2019-09-27 11:55:19,025 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Starting Bean: listener
+INFO  2019-09-27 11:55:19,029 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+* Application: scheduler-tests                                       *
+* OS encoding: UTF-8, Mule encoding: UTF-8                           *
+*                                                                    *
+**********************************************************************
+INFO  2019-09-27 11:55:19,029 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+* Started app 'scheduler-tests'                                      *
+* Application plugins:                                               *
+*  - Scripting : 1.1.6                                               *
+*  - Sockets : 1.1.5                                                 *
+*  - HTTP : 1.5.4                                                    *
+**********************************************************************
+INFO  2019-09-27 11:55:30,470 [[MuleRuntime].cpuLight.03: [scheduler-tests].http-max-concurrency-tests-flow.CPU_LITE @302555f4] [event: 9a74c420-e0ef-11e9-9510-025041000101] com.vinay.maxConcurrency: received request for testing max concurrency set to: 1
+INFO  2019-09-27 11:55:43,413 [http.listener.02 SelectorRunner] [event: ] org.mule.runtime.core.internal.exception.OnCriticalErrorHandler: {org.mule.runtime.core.internal.construct.FlowBackPressureException: Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time:
+********************************************************************************
+Message               : Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time
+Error type            : MULE:FLOW_BACK_PRESSURE
+Element               : http-max-concurrency-tests-flow @ scheduler-tests:http-tests.xml:8
+Element XML           : <flow name="http-max-concurrency-tests-flow" maxConcurrency="${http.maxConcurrency}">
+<http:listener path="/maxConcurrency" config-ref="Http_Listner" doc:name="Http Listner" primaryNodeOnly="true"></http:listener>
+<logger category="com.vinay.maxConcurrency" level="INFO" message="received request for testing max concurrency set to: ${http.maxConcurrency}"></logger>
+<scripting:execute doc:name="sleep" doc:id="b65a3f35-bb86-4073-9d53-9bd498b9a1ff" engine="groovy">
+<scripting:code>Thread.sleep(${http.sleepTimeInMillis});</scripting:code>
+</scripting:execute>
+<set-payload value="#[%dw 2.0 var greeting = "hello" --- greeting ++ "," ++ payload]" doc:name="Set Payload" doc:id="80745c50-1ce3-4079-b698-859e1e009765"></set-payload>
+</flow>
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+}
+INFO  2019-09-27 11:55:44,973 [http.listener.02 SelectorRunner] [event: ] org.mule.runtime.module.extension.internal.runtime.source.SourceAdapter: FLOW OVERLOAD - Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time.
+ERROR 2019-09-27 11:57:31,582 [[MuleRuntime].cpuIntensive.02: [scheduler-tests].http-max-concurrency-tests-flow.CPU_INTENSIVE @27e32b8] [event: 9a74c420-e0ef-11e9-9510-025041000101] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : "You called the function '++' with these arguments: 
+  1: String ("hello,")
+  2: Null (null as Null {encoding: "UTF-8", mediaType: "application/java; charset=UTF-8"...)
+
+But it expects one of these combinations:
+  (Array, Array)
+  (Date, Time)
+  (Date, LocalTime)
+  (Date, TimeZone)
+  (LocalDateTime, TimeZone)
+  (LocalTime, Date)
+  (LocalTime, TimeZone)
+  (Object, Object)
+  (String, String)
+  (Time, Date)
+  (TimeZone, LocalDateTime)
+  (TimeZone, Date)
+  (TimeZone, LocalTime)
+
+1| %dw 2.0 var greeting = "hello" --- greeting ++ "," ++ payload
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Trace:
+  at ++ (line: 1, column: 36)
+  at main (line: 1, column: 52)" evaluating expression: "%dw 2.0 var greeting = "hello" --- greeting ++ "," ++ payload".
+Error type            : MULE:EXPRESSION
+Element               : http-max-concurrency-tests-flow/processors/2 @ scheduler-tests:http-tests.xml:22 (Set Payload)
+Element XML           : <set-payload value="#[%dw 2.0 var greeting = "hello" --- greeting ++ "," ++ payload]" doc:name="Set Payload" doc:id="80745c50-1ce3-4079-b698-859e1e009765"></set-payload>
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2019-09-27 11:58:19,169 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Redeploying artifact 'scheduler-tests'                                       +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:19,170 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Stopping application 'scheduler-tests'                                       +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:19,171 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Stopping flow: http-max-concurrency-tests-flow
+INFO  2019-09-27 11:58:19,171 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Stopping Bean: listener
+INFO  2019-09-27 11:58:19,172 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Stopping Bean: org.mule.runtime.module.extension.internal.runtime.config.ConfigurationProviderToolingAdapter-Http_Listner
+INFO  2019-09-27 11:58:19,173 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.queue.QueueXaResourceManager: Stopping ResourceManager
+INFO  2019-09-27 11:58:19,173 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.queue.QueueXaResourceManager: Stopped ResourceManager
+INFO  2019-09-27 11:58:19,228 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Disposing application 'scheduler-tests'                                      +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:19,229 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.module.deployment.impl.internal.artifact.AbstractDeployableArtifact: Stopping app 'scheduler-tests' with no mule context
+INFO  2019-09-27 11:58:19,233 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Disposing Bean: org.mule.runtime.module.extension.internal.runtime.config.ConfigurationProviderToolingAdapter-Http_Listner
+INFO  2019-09-27 11:58:19,234 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Disposing flow: http-max-concurrency-tests-flow
+INFO  2019-09-27 11:58:19,234 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Disposing Bean: listener
+INFO  2019-09-27 11:58:19,234 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Disposing flow: scheduler-testsFlow
+INFO  2019-09-27 11:58:19,296 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+* Application "scheduler-tests" shut down normally on: 27/09/19      *
+* 11:58 AM                                                           *
+* Up for: 0 days, 0 hours, 3 mins, 0.282 sec                         *
+**********************************************************************
+INFO  2019-09-27 11:58:19,349 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ New app 'scheduler-tests'                                                    +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:19,350 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Initializing app 'scheduler-tests'                                           +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:20,837 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.journal.TransactionJournal: Using files for tx logs /Applications/AnypointStudio.app/Contents/Eclipse/plugins/org.mule.tooling.server.4.2.1.ee_7.3.3.201907152016/mule/./.mule/scheduler-tests/queue-tx-log/tx1.log and /Applications/AnypointStudio.app/Contents/Eclipse/plugins/org.mule.tooling.server.4.2.1.ee_7.3.3.201907152016/mule/./.mule/scheduler-tests/queue-tx-log/tx2.log
+INFO  2019-09-27 11:58:20,838 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.journal.TransactionJournal: Using files for tx logs /Applications/AnypointStudio.app/Contents/Eclipse/plugins/org.mule.tooling.server.4.2.1.ee_7.3.3.201907152016/mule/./.mule/scheduler-tests/queue-xa-tx-log/tx1.log and /Applications/AnypointStudio.app/Contents/Eclipse/plugins/org.mule.tooling.server.4.2.1.ee_7.3.3.201907152016/mule/./.mule/scheduler-tests/queue-xa-tx-log/tx2.log
+INFO  2019-09-27 11:58:20,845 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Initialising Bean: org.mule.runtime.module.extension.internal.runtime.config.ConfigurationProviderToolingAdapter-Http_Listner
+INFO  2019-09-27 11:58:20,855 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Initialising flow: http-max-concurrency-tests-flow
+INFO  2019-09-27 11:58:20,863 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Initialising Bean: listener
+INFO  2019-09-27 11:58:20,876 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Initialising flow: scheduler-testsFlow
+INFO  2019-09-27 11:58:20,911 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Starting app 'scheduler-tests'                                               +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2019-09-27 11:58:20,912 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.queue.QueueXaResourceManager: Starting ResourceManager
+INFO  2019-09-27 11:58:20,912 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.util.queue.QueueXaResourceManager: Started ResourceManager
+INFO  2019-09-27 11:58:20,913 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Starting Bean: org.mule.runtime.module.extension.internal.runtime.config.ConfigurationProviderToolingAdapter-Http_Listner
+INFO  2019-09-27 11:58:20,916 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Starting flow: http-max-concurrency-tests-flow
+INFO  2019-09-27 11:58:20,918 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Starting flow: scheduler-testsFlow
+INFO  2019-09-27 11:58:20,918 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.FlowConstructLifecycleManager: Stopping flow: scheduler-testsFlow
+INFO  2019-09-27 11:58:20,918 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.construct.AbstractFlowConstruct: Flow scheduler-testsFlow has not been started (initial state = 'stopped')
+INFO  2019-09-27 11:58:20,922 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.privileged.lifecycle.AbstractLifecycleManager: Starting Bean: listener
+INFO  2019-09-27 11:58:20,926 [Mule.app.deployer.monitor.1.thread.1] [event: ] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+* Application: scheduler-tests                                       *
+* OS encoding: UTF-8, Mule encoding: UTF-8                           *
+*                                                                    *
+**********************************************************************
+INFO  2019-09-27 11:58:20,926 [Mule.app.deployer.monitor.1.thread.1] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+* Started app 'scheduler-tests'                                      *
+* Application plugins:                                               *
+*  - Scripting : 1.1.6                                               *
+*  - Sockets : 1.1.5                                                 *
+*  - HTTP : 1.5.4                                                    *
+**********************************************************************
+INFO  2019-09-27 11:58:31,574 [[MuleRuntime].cpuLight.03: [scheduler-tests].http-max-concurrency-tests-flow.CPU_LITE @142fbf0b] [event: 06673230-e0f0-11e9-9510-025041000101] com.vinay.maxConcurrency: received request for testing max concurrency set to: 1
+INFO  2019-09-27 11:58:34,467 [http.listener.01 SelectorRunner] [event: ] org.mule.runtime.core.internal.exception.OnCriticalErrorHandler: {org.mule.runtime.core.internal.construct.FlowBackPressureException: Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time:
+********************************************************************************
+Message               : Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time
+Error type            : MULE:FLOW_BACK_PRESSURE
+Element               : http-max-concurrency-tests-flow @ scheduler-tests:http-tests.xml:8
+Element XML           : <flow name="http-max-concurrency-tests-flow" maxConcurrency="${http.maxConcurrency}">
+<http:listener path="/maxConcurrency" config-ref="Http_Listner" doc:name="Http Listner" primaryNodeOnly="true"></http:listener>
+<logger category="com.vinay.maxConcurrency" level="INFO" message="received request for testing max concurrency set to: ${http.maxConcurrency}"></logger>
+<scripting:execute doc:name="sleep" doc:id="b65a3f35-bb86-4073-9d53-9bd498b9a1ff" engine="groovy">
+<scripting:code>Thread.sleep(${http.sleepTimeInMillis});</scripting:code>
+</scripting:execute>
+<set-payload value="#[%dw 2.0 var greeting = "hello" --- greeting ++ "," ++ (payload default 'none')]" doc:name="Set Payload" doc:id="80745c50-1ce3-4079-b698-859e1e009765"></set-payload>
+</flow>
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+}
+INFO  2019-09-27 11:58:36,264 [http.listener.01 SelectorRunner] [event: ] org.mule.runtime.module.extension.internal.runtime.source.SourceAdapter: FLOW OVERLOAD - Flow 'http-max-concurrency-tests-flow' is unable to accept new events at this time.

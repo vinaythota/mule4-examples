@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+	<flow name="http-max-concurrency-tests-flow" maxConcurrency="${http.maxConcurrency}">
+	
+		<http:listener path="/maxConcurrency" 
+			config-ref="Http_Listner"  
+			doc:name="Http Listner" 
+			primaryNodeOnly="true"/>
+		
+		<logger category="com.vinay.maxConcurrency" level="INFO" message="received request for testing max concurrency set to: ${http.maxConcurrency}"/>
+		<scripting:execute doc:name="sleep" doc:id="b65a3f35-bb86-4073-9d53-9bd498b9a1ff" engine="groovy">
+			<scripting:code >Thread.sleep(${http.sleepTimeInMillis});</scripting:code>
+		</scripting:execute>
+		<set-payload value="#[%dw 2.0
+var greeting = &quot;hello&quot;
+---
+greeting ++ &quot;,&quot; ++ (payload default 'none')]" doc:name="Set Payload" doc:id="80745c50-1ce3-4079-b698-859e1e009765" />
+		
+		
+	</flow>
+	
+</mule>
