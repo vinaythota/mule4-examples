@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="munit-test-raise-errorFlow" doc:id="66ce35af-d487-4a7f-a6b4-000a4ceab843" >
+		<http:listener doc:name="Listener" doc:id="644a1890-22d5-4008-986e-39f6bf489cd5" config-ref="HTTP_Listener_config" path="/error"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5989bb43-394e-4e72-9b5f-d4bd00bc53dd" message="Received a request to raise error"/>
+		<raise-error doc:name="Raise error" doc:id="5e10c387-b011-463f-b24f-74b974913009" type="MYAPP:MY_ERROR" description="throwing a custom error test"/>
+	</flow>
+</mule>

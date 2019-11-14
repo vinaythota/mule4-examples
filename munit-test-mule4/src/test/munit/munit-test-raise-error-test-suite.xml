@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="munit-test-raise-error-test-suite.xml" />
+	<munit:test name="munit-test-raise-error-test-suite-munit-test-raise-errorFlowTest" description="Test" doc:id="3f403c5c-9be4-488b-987b-02da82b5ae73" expectedErrorType="MYAPP:MY_ERROR">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to munit-test-raise-errorFlow" doc:id="60352f8b-5e2f-4a11-9001-3682ad1bd893" name="munit-test-raise-errorFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Logger" doc:id="765dc547-a947-44e2-864c-346f15f492db" message="validation phase executed"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>

@@ -18,19 +18,19 @@ public class PayloadGenerator {
 	
 	private static void generateCSVPayload(String fileName, int noOfRecords) throws IOException {
 		
-		System.out.println("## Started Preparing CSV Payload");
+		System.out.println("Started Preparing CSV Payload");
 		
 		try (Writer writer = new BufferedWriter(new FileWriter(new File("orders.csv")));) {
 
 			Random r1 = new Random();
-
+			writer.write("ID" + "," + "VALUE" + "\n");
 			for (int i = 1; i <= noOfRecords; i++) {
 				writer.write("ORD:" + i + "," + r1.nextInt(10000) + "\n");
 			}
 			writer.flush();
 		}
 		
-		System.out.println("## Completed Preparing CSV Payload");
+		System.out.println("Completed Preparing CSV Payload");
 	}
 	
 	private static void generateXMLPayload(String fileName, int noOfRecords) throws IOException {

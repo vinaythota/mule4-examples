@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+	<flow name="csv-to-another-file-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" maxConcurrency="${csvToAnotherFile.maxConcurrency}" initialState="${csvToAnotherFile.initialState}">
+		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="${csvToAnotherFile.inputDir}" watermarkMode="MODIFIED_TIMESTAMP" recursive="false" outputMimeType="application/csv">
+			<ee:repeatable-file-store-stream inMemorySize="5024" />
+			<scheduling-strategy >
+				<fixed-frequency frequency="${csvToAnotherFile.frequencyInSeconds}" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</file:listener>
+		<set-variable value="#[attributes.fileName]" doc:name="file name" doc:id="b0283499-fa40-461a-8917-356f8817a12c" variableName="fileName" />
+		<set-variable value="#[now()]" doc:name="startTime" doc:id="3917cada-a81e-4ad8-9e42-05acecf54148" variableName="startTime"/>
+		<set-variable value="#[%dw 2.0
+import * from dw::core::Strings
+output application/json
+---
+p('csvToAnotherFile.outputDir') ++ p('seperator') ++ substringBeforeLast(vars.fileName,&quot;.csv&quot;) ++ now() ++ &quot;.csv&quot;]" doc:name="outputFileName" doc:id="16ad00b7-b397-4bde-a6cb-d6638551b210" variableName="outputFileName"/>
+		<logger level="INFO" doc:name="message received" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="message received, file name: #[vars.fileName]" category="com.vinay.csv-to-another-file"/>
+		<ee:transform doc:name="Transform Message" doc:id="616d867e-3095-43e3-8577-4589c75603cf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload as Iterator]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="d8cef572-37bc-4c57-b9b5-73c564e6dbc4" batchSize="${csvToAnotherFile.batchSize}">
+			<logger level="INFO" doc:name="Logger" doc:id="75853f0e-60c8-433d-bcac-4f84b5654948" message="inside loop: #[payload], fileName: #[vars.fileName]" category="com.vinay.csv-to-another-file"/>
+			<file:write doc:name="Write" doc:id="2443727d-eaae-4128-b529-f00c41735533" mode="APPEND" path="#[vars.outputFileName]">
+				<file:content ><![CDATA[#[payload.ID ++  "," ++ payload.VALUE ++ '\n']]]></file:content>
+			</file:write>
+		</foreach>
+		<set-variable value="#[now()]" doc:name="endTime" doc:id="8358f0e1-c1cc-41fa-bb1b-88f019795353" variableName="endTime"/>
+		<logger level="INFO" doc:name="total time" doc:id="1f2ee957-7176-4947-b36e-54a0ee8c8166" message="#[(vars.endTime)-(vars.startTime)]" category="com.vinay.csv-to-another-file"/>
+	</flow>
+	
+</mule>

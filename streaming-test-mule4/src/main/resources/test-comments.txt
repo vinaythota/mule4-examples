@@ -1,0 +1,4 @@
+1. setting maxConcurrency to 1 does not work as expected. it still accepts more than 1 event
+
+2. Attributes are not available inside for each loop??
+	https://docs.mulesoft.com/mule-runtime/4.2/for-each-scope-concept

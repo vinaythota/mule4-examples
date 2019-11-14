@@ -1,0 +1,1 @@
+1. setting "maxConcurrency" on a file listner (see csv-to-logger.xml) does not work

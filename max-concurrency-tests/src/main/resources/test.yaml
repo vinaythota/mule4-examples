@@ -10,3 +10,10 @@ scheduler:
   sleepTimeInMillis: "120000"
   initialState: "started"
   
+csvToLogger:
+  initialState: started
+  inputDir: /Users/vinay/Documents/input/csvToLogger
+# inputDir: e:\\tmp\\input\\toLogger
+  frequencyInSeconds: "30"
+  maxConcurrency: "1"
+  

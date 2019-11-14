@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			user="${mysql.user}" 
 			password="${mysql.password}" 
 			database="${mysql.database}">
-			<reconnection failsDeployment="true">
+			<reconnection failsDeployment="false">
 				<reconnect count="3" />
 			</reconnection>
 		</db:my-sql-connection>

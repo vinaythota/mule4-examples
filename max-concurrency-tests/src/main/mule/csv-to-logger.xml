@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  
+  	<!-- <flow name="csv-to-logger-flow" doc:id="bf3d9024-d24d-408e-84f8-bcf995994f26" initialState="${csvToLogger.initialState}" maxConcurrency="${csvToLogger.maxConcurrency}"> -->
+  	
+	<flow name="csv-to-logger-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" initialState="${csvToLogger.initialState}" maxConcurrency="1">
+		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="${csvToLogger.inputDir}" watermarkMode="MODIFIED_TIMESTAMP">
+			<ee:repeatable-file-store-stream inMemorySize="5024" />
+			<scheduling-strategy >
+				<fixed-frequency frequency="${csvToLogger.frequencyInSeconds}" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</file:listener>
+		<logger level="INFO" doc:name="msg rcvd" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="message received, file name: #[attributes.fileName]" category="com.vinay.csv-to-logger"/>
+		<ee:transform doc:name="Transform Message" doc:id="9d3db889-20c8-45d9-909e-865a44988b30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload as Iterator]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="a69e9d60-6e0d-4175-bd62-12d21476988c" >
+			<logger level="INFO" doc:name="log each " doc:id="36dcb8d7-06a2-4cdc-a128-f7f8c9b3905b" message="inside loop: #[payload]" category="com.vinay.csv-to-logger"/>
+		</foreach>
+	</flow>
+	
+</mule>

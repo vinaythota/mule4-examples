@@ -1,2 +1,17 @@
-input:
-  dir: e:\\tmp\\input
+csvToLogger:
+  initialState: started
+  inputDir: /Users/vinay/Documents/input/csvToLogger
+# inputDir: e:\\tmp\\input\\toLogger
+  frequencyInSeconds: "3"
+  maxConcurrency: "1"
+  
+csvToAnotherFile:
+  initialState: started
+  inputDir: /Users/vinay/Documents/input/csvToAnotherFile
+  outputDir: /Users/vinay/Documents/output/csvToAnotherFile
+# inputDir: e:\\tmp\\input\\toAnotherDir
+  frequencyInSeconds: "3"
+  batchSize: "1"
+  maxConcurrency: "1"
+  
+seperator: "/"
