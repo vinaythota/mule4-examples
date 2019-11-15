@@ -16,4 +16,5 @@ csvToLogger:
 # inputDir: e:\\tmp\\input\\toLogger
   frequencyInSeconds: "30"
   maxConcurrency: "1"
+  initialState: "stopped"
   

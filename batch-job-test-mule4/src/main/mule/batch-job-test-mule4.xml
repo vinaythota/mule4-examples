@@ -1,64 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd">
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="77a5869d-a251-4a5a-84d9-1ba8f397e765" >
-		<db:my-sql-connection host="localhost" port="3306" user="odp" password="odp123" database="odp" />
-	</db:config>
-	<flow name="batch-job-test-mule4Flow" doc:id="b1b173bd-bf28-4f3a-b9bf-48408d6d8c64"  maxConcurrency="1">
-		<scheduler doc:name="Scheduler" doc:id="d4e81a36-6adc-4231-984d-ef8447232260" >
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	
+	<flow name="batch-job-test-mule4Flow" doc:id="d418d7cd-7b88-41b0-997f-0d06ed8eafb9"  maxConcurrency="1">
+		<scheduler doc:name="Scheduler" doc:id="7f74be09-426c-4ef1-bdbe-327ea31b092d" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="60" timeUnit="SECONDS" startDelay="1"/>
+				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<db:select doc:name="Select" doc:id="9d6005f6-069c-4aed-9b79-000b77fb4b39" config-ref="Database_Config">
+		<logger level="INFO" doc:name="Logger" doc:id="3f895bc9-c58b-45b9-9231-3d8ec462acc7" message="RECEIVED AN EVENT"/>
+		<db:select doc:name="Select" doc:id="a8e6cb60-ff92-4ef0-af25-7a9dd1d0d1c9" config-ref="Database_Config_MySQL">
 			<db:sql >select * from employee</db:sql>
 		</db:select>
-		<set-variable value="OutSide Variable" doc:name="Set Variable" doc:id="eaffafb8-03bc-405a-b57c-6672e706827e" variableName="outSideVar"/>
-		<batch:job jobName="batch-job-test-mule4Batch_Job" doc:id="e63d909b-0f7d-4226-bec7-3f0897a1302f" maxFailedRecords="-1" blockSize="10">
+		<set-variable value="OutSide Variable" doc:name="Set Variable" doc:id="243f8ce2-6ce2-4de1-9220-420a7dbcba52" variableName="outSideVar"/>
+		<batch:job jobName="batch-job-test-mule4Batch_Job" doc:id="e4a8c726-80b8-48fe-bd63-fad8c14e5865" maxFailedRecords="-1">
 			<batch:process-records >
-				<batch:step name="STEP-1" doc:id="48f681b0-d43f-41ad-99e0-6e2b180780be" >
-					<logger level="INFO" doc:name="Logger" doc:id="a42136fe-9ac0-4179-b86a-9bfb96aafbf7" message="## Step 1 Super: #[payload] ##"/>
-					
-					
-					 
-					<set-variable value="Inside Variable In Step1" doc:name="Set Variable" doc:id="2bc935e5-27c0-4409-9528-5a1a6211aec3" variableName="insideVariable1"/>
+				<batch:step name="STEP-1" doc:id="0d7eed3e-c4b7-4ed9-b21a-7a8ba5934990" >
+					<set-variable value="Inside Variable In Step1" doc:name="Set Variable" doc:id="a250510b-8cd5-4322-82a1-1348b6352b56" variableName="insideVariable1" />
+					<scripting:execute engine="groovy" doc:name="Execute" doc:id="525d63ed-6416-4a83-a76c-934c74c2c0dc">
+							<scripting:code>Thread.sleep(120000);</scripting:code>
+						</scripting:execute>
+					<logger level="INFO" doc:name="Logger" doc:id="f81cb2fe-85e9-4198-9a94-d1ece7f5bef2" message="###  Step 1: #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1] ###" />
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="8460faa7-54a7-4f00-be8f-78ef86e96bfa" size="5">
+						<ee:transform doc:name="Transform Message" doc:id="ab86551c-1813-455e-8c3e-d28e71c19d2f" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload map {
+	changedName: 'STEP1' ++ $.department,
+	empId: $.id,
+	depId: if($.id == 1) 'test' else $.id + 1
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<logger level="INFO" doc:name="Logger" doc:id="0bb2e577-2e9f-44f7-b1d6-ddc50664fd87" message="##  STEP 1 Aggregation: #[payload]"/>
+						<try doc:name="Try" doc:id="9b575c54-8baf-40f3-94b5-626afe13262f" >
+							<db:bulk-update doc:name="Bulk update" doc:id="a9aa3cd6-3c60-4b22-aea4-bc9dba8585fa" config-ref="Database_Config_MySQL">
+							<db:sql>update employee set fname = :changedName, depId= :depId where id = :empId</db:sql>
+						</db:bulk-update>
+							<error-handler >
+								<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="834a3942-3385-4d66-bbd3-7873aa787f6e" >
+									<logger level="INFO" doc:name="Logger" doc:id="8a2fc63b-0e31-4667-8c30-0fb9e6285bca" message="# Step 1 DB Exception Payload: #[payload] ##"/>
+								</on-error-continue>
+							</error-handler>
+						</try>
+						<logger level="INFO" doc:name="Logger" doc:id="25dcd773-b835-4747-a273-511d764c2616" message="## Result from DB Call: #[payload] ##"/>
+					</batch:aggregator>
 				</batch:step>
-				<batch:step name="STEP-2" doc:id="c8a4cc78-c685-4a4d-951b-bb731f994bcd" acceptPolicy="ALL">
-					<set-variable value="Inside Variable in Step 2" doc:name="Set Variable" doc:id="40a78079-e4be-4f46-9ebd-02e32241fcd2" variableName="insideVariable2"/>
-					<set-variable value="Inside Variable in Step 1 Changed" doc:name="Set Variable" doc:id="414089e4-74a8-4377-9734-60b4625303ff" variableName="insideVariable1"/>
-					<logger level="INFO" doc:name="Logger" doc:id="02b29ed9-ee39-4a1f-84e6-a2e3ffe91b16" message="## Step 2 : #[payload] ##"/>
-					
+				<batch:step name="STEP-2" doc:id="2b19c772-dcdc-4766-a818-4edf7afe20eb">
+					<logger level="INFO" doc:name="Logger" doc:id="7b8d73a6-d5d9-457a-b917-f639f4b576a8" message="## Step 2: Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1], Inside Variable Two: #[vars.insideVariable2]##" />
+					<set-variable value="Inside Variable in Step 2" doc:name="Set Variable" doc:id="ddd08a7f-cdab-4ce7-8888-1c54b021d072" variableName="insideVariable2"/>
+					<set-variable value="Inside Variable in Step 1 Changed" doc:name="Set Variable" doc:id="cf6e0c5c-f429-4e8d-8e59-2f2ad7e5c248" variableName="insideVariable1"/>
+					<logger level="INFO" doc:name="Logger" doc:id="fd2e6ac5-d732-4709-9d4f-f2ba1d979156" message="## Step 2: #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1], Inside Variable Two: #[vars.insideVariable2]##"/>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="9abf997c-9da2-4415-ae28-85ec10a3586b" size="3">
+						<logger level="INFO" doc:name="Logger" doc:id="0cda19f6-281e-4ba5-ba0f-e1467b7a73dc" message="## STEP 2 Aggregation: #[payload]" />
+						<db:bulk-update doc:name="Bulk update" doc:id="6ed33330-d8c1-43bf-a550-4943a3117762" config-ref="Database_Config_MySQL">
+							<db:bulk-input-parameters ><![CDATA[#[output application/java --- payload map { changedName: ('STEP2' ++ $.phone), empId: $.id }]]]></db:bulk-input-parameters>
+							<db:sql >update employee set lname = :changedName  where id = :empId</db:sql>
+						</db:bulk-update>
+					</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete >
-				<logger level="INFO" doc:name="Logger" doc:id="c14a1549-556c-4b82-b42b-b7c7be587df8" message="## Final Output : #[payload] ##"/>
+				<logger level="INFO" doc:name="Logger" doc:id="dc666076-ff3d-47b1-90aa-a6616b11f174" message="##  Final Output #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1], Inside Variable Two: #[vars.insideVariable2]##"/>
 			</batch:on-complete>
 		</batch:job>
+		<logger level="INFO" doc:name="Logger" doc:id="25d64c36-1123-4b2a-a6f1-eeaf8d7f1412" message="BATCH JOB TRIGGERED SUCCESSFULLY"/>
 	</flow>
-	<flow name="batch-job-test-mule4Flow1" doc:id="0cd4f5bd-44a7-4b04-82cf-5284ea731193" initialState="stopped">
-		<db:listener doc:name="On Table Row" doc:id="821328a7-4d3b-4c28-b594-2b68d4bb48b9" config-ref="Database_Config" table="employee" watermarkColumn="id">
+	<flow name="batch-job-test-mule4Flow1" doc:id="14d9f93f-9a09-4913-bf1b-6a264dae9db9" >
+		<db:listener doc:name="On Table Row" doc:id="185e0da6-5ff4-45b0-9aa8-324e991cf2c8" config-ref="Database_Config_MySQL" table="employee" watermarkColumn="id">
 			<scheduling-strategy >
 				<fixed-frequency frequency="1" timeUnit="DAYS" startDelay="1"/>
 			</scheduling-strategy>
 		</db:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="81f7f3ad-b987-427a-8095-d61a1d3c1738" message="## Received Payload: #[payload] ##"/>
-		<async doc:name="Async" doc:id="077b03d1-5aef-4d05-856c-75787b8b4c35" >
-			<flow-ref doc:name="Flow Reference" doc:id="9723c5e5-1368-493d-94b5-80c1457dc094" name="aggregate-records"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c1a8c2e2-9e21-4e6c-80f5-69cdf5eb6aa9" message="## Received Payload: #[payload] ##"/>
+		<async doc:name="Async" doc:id="646f3766-eff8-4b04-9fd3-d958e44cd8da" >
+			<flow-ref doc:name="Flow Reference" doc:id="cea32de0-728c-4599-969d-0936f7de1f2b" name="aggregate-records"/>
 		</async>
 	</flow>
-	<flow name="aggregate-records" doc:id="3a5f9e88-ac89-4fe1-beb0-e5862ea94287" >
-		<aggregators:size-based-aggregator doc:name="Size based aggregator" doc:id="d7863011-9777-4179-a403-1cc4d359f604" name="RecordsAggregator" maxSize="4" timeout="30">
+	<flow name="aggregate-records" doc:id="06c887cd-69b3-45da-beaf-ae05f94a5632" >
+		<aggregators:size-based-aggregator doc:name="Size based aggregator" doc:id="62b3110b-5d24-4f37-9c4a-060f4fa74073" name="RecordsAggregator" maxSize="4" timeout="30">
 			<aggregators:incremental-aggregation >
-				<logger level="INFO" doc:name="Logger" doc:id="378e918b-9961-4257-ad9f-80ba62ceb98e" message="## Increment Log: #[payload] ##"/>
+				<logger level="INFO" doc:name="Logger" doc:id="7a78ce2e-862d-4010-9758-e70ce64b2bd2" message="## Increment Log: #[payload] ##"/>
 			</aggregators:incremental-aggregation>
 			<aggregators:aggregation-complete >
-				<logger level="INFO" doc:name="Logger" doc:id="cd76a5cd-aa25-499b-98f8-ec43258cfa1e" message="## Aggregated Log: #[payload] ##"/>
+				<logger level="INFO" doc:name="Logger" doc:id="582ed984-bee1-4754-adbd-49be93547871" message="## Aggregated Log: #[payload] ##"/>
 			</aggregators:aggregation-complete>
 		</aggregators:size-based-aggregator>
 	</flow>
