@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<flow name="batch-testFlow" doc:id="578f9837-9174-4953-9932-92cd6a915d2b" >
 		<http:listener path="/batchtest" config-ref="http_listner_config"/>
 		<logger message="received request for batch test"/>
-		<set-payload value="#[['1','2','3','4','5']]"/>
+		<set-payload value="#[['1','2','3','4','5']]" doc:name="Set Payload to list of 5 elemets"/>
 		<batch:job jobName="batch_job" blockSize="${batch.blockSize}">
 			<batch:process-records>
 				<batch:step name="step_1" >
@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 					<logger level="INFO" doc:name="Logger" doc:id="e0ec156b-7fb5-4b39-a622-125d88a9f2ed" message="completed processing step 1 with payload: #[payload]"/>
 			</batch:step>
 			<batch:step name="step_2">
-				<logger message="processed step 2 with payload: #[payload]"/>
+				<logger message="processed step 2 with payload: #[payload]" level="INFO"/>
 			</batch:step>
 			</batch:process-records>
 			

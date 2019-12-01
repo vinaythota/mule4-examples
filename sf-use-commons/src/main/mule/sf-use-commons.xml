@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<flow name="sf-use-commonsFlow" doc:id="51616629-f75f-4635-a6e2-91a5da785edd" >
+		<http:listener doc:name="Listener" doc:id="8ae46fd5-4ac9-4a99-a29a-aca892606fd6" config-ref="http_listner_config" path="/useCommons"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6aed484a-075c-43e1-8cbe-18bcef8e257b" message="received a request to use commons"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="29d9a30d-de2c-4efc-be2f-4ff5bfd3b8ac"
+			 class="com.test.Calculator"
+			 method="add(int, int)" >
+			<java:args ><![CDATA[#[{
+	arg0: 3,
+	arg1: 7
+}]]]></java:args>
+
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="29c31b95-9cb9-45a6-b039-a507d3d3e03f" message="response: #[payload]"/>
+	</flow>
+</mule>
