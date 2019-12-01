@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="https-testFlow" doc:id="fb483a98-9d78-47a5-b5a7-f1df0702e714" >
+		<http:listener doc:name="Listener" doc:id="936b58f9-9d21-4d81-b4b9-d8f87d918f0f" config-ref="https_listner_config" path="/httpsTest"/>
+		<logger level="INFO" doc:name="Logger" doc:id="38c36fd4-9868-4e6f-87ba-08ad1d53bb50" message="received request for https test"/>
+		<set-payload value="#['Hi from https test']" doc:name="Set Payload" doc:id="05a26d15-ced5-4f18-9a7c-e6c25d1044cf" />
+	</flow>
+</mule>
