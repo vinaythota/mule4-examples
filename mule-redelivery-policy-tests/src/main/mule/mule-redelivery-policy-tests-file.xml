@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="mule-redelivery-policy-tests-file-Flow" doc:id="7a6bbd16-29ff-4f05-8161-a9c85c3d4c87" >
+		<file:listener doc:name="On New or Updated File" doc:id="f72a7e77-7ffa-4d93-b6e3-505de685009a" directory="${csvToLogger.inputDir}" watermarkMode="MODIFIED_TIMESTAMP">
+			<redelivery-policy />
+			<ee:repeatable-file-store-stream inMemorySize="5024" />
+			<scheduling-strategy >
+				<fixed-frequency frequency="${csvToLogger.frequencyInSeconds}" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</file:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="c89655de-a163-4c10-b8e0-0fcddb64c523" message="Received a request for redelivery policy HTTP test, payload: #[payload]"/>
+		<raise-error doc:name="Raise error" doc:id="ddef91ce-7c7e-45bf-8bd2-ef9ce48e32bf" type="MYAPP:MY_CUSTOM_ERROR" description="this is test error"/>
+	</flow>
+</mule>

@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
 	
-	<flow name="batch-job-test-mule4Flow" doc:id="d418d7cd-7b88-41b0-997f-0d06ed8eafb9"  maxConcurrency="1" initialState="${mainTest.initialState}">
+	<flow name="batch-job-test-waitUntilFinish-mule4Flow" doc:id="d418d7cd-7b88-41b0-997f-0d06ed8eafb9"  maxConcurrency="1" initialState="${waitUntilFinishTest.initialState}">
 		<scheduler doc:name="Scheduler" doc:id="7f74be09-426c-4ef1-bdbe-327ea31b092d" >
 			<scheduling-strategy >
 				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<logger level="INFO" doc:name="Logger" doc:id="3f895bc9-c58b-45b9-9231-3d8ec462acc7" message="RECEIVED AN EVENT"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3f895bc9-c58b-45b9-9231-3d8ec462acc7" message="RECEIVED AN EVENT for Until Finish Test"/>
 		<db:select doc:name="Select" doc:id="a8e6cb60-ff92-4ef0-af25-7a9dd1d0d1c9" config-ref="Database_Config_MySQL">
 			<db:sql >select * from employee</db:sql>
 		</db:select>
 		<set-variable value="OutSide Variable" doc:name="Set Variable" doc:id="243f8ce2-6ce2-4de1-9220-420a7dbcba52" variableName="outSideVar"/>
-		<batch:job jobName="batch-job-test-mule4Batch_Job" doc:id="e4a8c726-80b8-48fe-bd63-fad8c14e5865" maxFailedRecords="-1">
+		<batch:job jobName="batch-job-test-waitUntilFinish-mule4Batch_Job" doc:id="e4a8c726-80b8-48fe-bd63-fad8c14e5865" maxFailedRecords="-1" blockSize="2" target="batchJobResult">
 			<batch:process-records >
 				<batch:step name="STEP-1" doc:id="0d7eed3e-c4b7-4ed9-b21a-7a8ba5934990" >
 					<set-variable value="Inside Variable In Step1" doc:name="Set Variable" doc:id="a250510b-8cd5-4322-82a1-1348b6352b56" variableName="insideVariable1" />
+					<scripting:execute doc:name="Execute" doc:id="ae0a437b-3923-4dd9-9bdc-e4dee2a7d5a2" engine="groovy">
+						<scripting:code >Thread.sleep(10000);
+return payload;</scripting:code>
+					</scripting:execute>
 					<logger level="INFO" doc:name="Logger" doc:id="f81cb2fe-85e9-4198-9a94-d1ece7f5bef2" message="###  Step 1: #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1] ###" />
 					<batch:aggregator doc:name="Batch Aggregator" doc:id="8460faa7-54a7-4f00-be8f-78ef86e96bfa" size="5">
 						<ee:transform doc:name="Transform Message" doc:id="ab86551c-1813-455e-8c3e-d28e71c19d2f" >
@@ -39,16 +45,9 @@ payload map {
 							</ee:message>
 						</ee:transform>
 						<logger level="INFO" doc:name="Logger" doc:id="0bb2e577-2e9f-44f7-b1d6-ddc50664fd87" message="##  STEP 1 Aggregation: #[payload]"/>
-						<try doc:name="Try" doc:id="9b575c54-8baf-40f3-94b5-626afe13262f" >
-							<db:bulk-update doc:name="Bulk update" doc:id="a9aa3cd6-3c60-4b22-aea4-bc9dba8585fa" config-ref="Database_Config_MySQL">
+						<db:bulk-update doc:name="Bulk update" doc:id="a9aa3cd6-3c60-4b22-aea4-bc9dba8585fa" config-ref="Database_Config_MySQL">
 							<db:sql>update employee set fname = :changedName, depId= :depId where id = :empId</db:sql>
 						</db:bulk-update>
-							<error-handler >
-								<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="834a3942-3385-4d66-bbd3-7873aa787f6e" >
-									<logger level="INFO" doc:name="Logger" doc:id="8a2fc63b-0e31-4667-8c30-0fb9e6285bca" message="# Step 1 DB Exception Payload: #[payload] ##"/>
-								</on-error-continue>
-							</error-handler>
-						</try>
 						<logger level="INFO" doc:name="Logger" doc:id="25dcd773-b835-4747-a273-511d764c2616" message="## Result from DB Call: #[payload] ##"/>
 					</batch:aggregator>
 				</batch:step>
@@ -67,9 +66,17 @@ payload map {
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete >
-				<logger level="INFO" doc:name="Logger" doc:id="dc666076-ff3d-47b1-90aa-a6616b11f174" message="##  Final Output #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1], Inside Variable Two: #[vars.insideVariable2]##"/>
+				<logger level="INFO" doc:name="Logger" doc:id="dc666076-ff3d-47b1-90aa-a6616b11f174" message="##  Final Output #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1], Inside Variable Two: #[vars.insideVariable2]##, Payload: #[payload]"/>
+				<os:store doc:name="Store" doc:id="01aa0e38-0782-4e1f-b152-101b1f9ceef2" key="#[payload.batchJobInstanceId]">
+					<os:value ><![CDATA[#['completed']]]></os:value>
+				</os:store>
 			</batch:on-complete>
 		</batch:job>
-		<logger level="INFO" doc:name="Logger" doc:id="25d64c36-1123-4b2a-a6f1-eeaf8d7f1412" message="BATCH JOB TRIGGERED SUCCESSFULLY"/>
+		<logger level="INFO" doc:name="Logger" doc:id="25d64c36-1123-4b2a-a6f1-eeaf8d7f1412" message="BATCH JOB TRIGGERED SUCCESSFULLY,  Payload: #[payload], Batch Instance ID: #[vars.batchJobResult.id]" />
+		<until-successful maxRetries="10" doc:name="Until Successful" doc:id="64a03168-d879-4add-b789-0ef1c363d84c" >
+			<logger level="INFO" doc:name="Logger" doc:id="e3a676f5-1e22-4e8d-abd0-b6e654716ca3" message="Checking whether Batch Job is Finished for ID: #[vars.batchJobResult.id]"/>
+			<os:retrieve doc:name="Retrieve" doc:id="d9993cf4-c3d5-4d1e-925d-eea61aa99721" key=" #[vars.batchJobResult.id]"/>
+		</until-successful>
+		<logger level="INFO" doc:name="Logger" doc:id="f32fd2ce-0a90-419c-a6f8-81762be19455" message="BATCH JOB COMPLETED SUCCESSFULLY"/>
 	</flow>
 </mule>

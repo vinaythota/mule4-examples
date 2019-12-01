@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="sample-flowFlow" doc:id="5fd96c46-d2fc-4748-b0d6-0e7d8b8e86db" >
+		<http:listener doc:name="Listener" doc:id="78cbf346-dd19-4773-ad4e-564dcd4d4210" config-ref="Http_Listner" path="/sample"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b3a065ad-b42a-420c-9601-3ed93d244848" message="received request to sample flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="1907b6f1-6bc1-43bc-b211-2608648b8906" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	test : 1
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4cfb8764-600f-47de-a4b5-14cd0872ae1f" message="transformed a message"/>
+	</flow>
+</mule>

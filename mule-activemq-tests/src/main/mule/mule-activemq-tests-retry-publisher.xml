@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d7debb6b-e871-416f-b666-a3686cfef083" >
+		<http:request-connection host="localhost" port="9090" />
+	</http:request-config>
+	<flow name="mule-activemq-tests-retry-publisherFlow" doc:id="ca0d5183-7217-4688-84f0-e8694047dae7" >
+		<http:listener doc:name="Listener" doc:id="2eab86ab-8cd2-457a-b0a4-9bf7e42b2a7e" config-ref="Http_Listner" path="/publish">
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="bc21f528-6447-4fd9-b7af-118f3439b7b7" message="received a request to publish, payload is: #[payload]"/>
+		<until-successful maxRetries="2" doc:name="Until Successful" doc:id="de766f82-59f4-4914-8b60-acee0c0f22d5" millisBetweenRetries="1000">
+			<http:request method="GET" doc:name="Request" doc:id="f325987c-254e-4f4b-971e-add028e36260" config-ref="HTTP_Request_configuration" path="/" />
+		</until-successful>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9bab70f3-0648-45b1-90e9-dbe96863b4f2" type="HTTP:RETRY_EXHAUSTED">
+				<logger level="INFO" doc:name="Logger" doc:id="dcf188ea-dcf1-41de-b0e8-11d6293fd51d" message="on retry exhausted"/>
+			</on-error-continue>
+		</error-handler>
+		<!-- <until-successful maxRetries="3" doc:name="Until Successful" doc:id="ecf5efd7-4463-435d-9c19-8b91e05f8fd4" millisBetweenRetries="1000">
+			<jms:publish doc:name="Publish" doc:id="064b680c-0cf2-4d97-af97-450a60e2e615" config-ref="JMS_Config" destination="${activeMQ.retryTestPublishQueue}">
+			<jms:message>
+				<jms:jmsx-properties />
+			</jms:message>
+			
+		</jms:publish>
+		</until-successful> -->
+	</flow>
+</mule>

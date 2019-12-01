@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<flow name="batch-job-test-usingAggregator" doc:id="14d9f93f-9a09-4913-bf1b-6a264dae9db9" initialState="${aggregatorTest.initialState}" >
+		<db:listener doc:name="On Table Row" doc:id="185e0da6-5ff4-45b0-9aa8-324e991cf2c8" config-ref="Database_Config_MySQL" table="employee" watermarkColumn="id">
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="DAYS" startDelay="1"/>
+			</scheduling-strategy>
+		</db:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="c1a8c2e2-9e21-4e6c-80f5-69cdf5eb6aa9" message="## Received Payload: #[payload] ##"/>
+		<async doc:name="Async" doc:id="646f3766-eff8-4b04-9fd3-d958e44cd8da" >
+			<flow-ref doc:name="Flow Reference" doc:id="cea32de0-728c-4599-969d-0936f7de1f2b" name="aggregate-records"/>
+		</async>
+	</flow>
+	<flow name="aggregate-records" doc:id="06c887cd-69b3-45da-beaf-ae05f94a5632" >
+		<aggregators:size-based-aggregator doc:name="Size based aggregator" doc:id="62b3110b-5d24-4f37-9c4a-060f4fa74073" name="RecordsAggregator" maxSize="4" timeout="30">
+			<aggregators:incremental-aggregation >
+				<logger level="INFO" doc:name="Logger" doc:id="7a78ce2e-862d-4010-9758-e70ce64b2bd2" message="## Increment Log: #[payload] ##"/>
+			</aggregators:incremental-aggregation>
+			<aggregators:aggregation-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="582ed984-bee1-4754-adbd-49be93547871" message="## Aggregated Log: #[payload] ##"/>
+			</aggregators:aggregation-complete>
+		</aggregators:size-based-aggregator>
+	</flow>
+</mule>

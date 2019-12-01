@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+	<configuration-properties file="test.yaml" />
+	
+	<http:listener-config name="Http_Listner" basePath="/">
+		<http:listener-connection port="${http.port}" host="${http.host}" />
+	</http:listener-config>
+	
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="375685c7-89f3-48c7-9a50-45935509c4d7" >
+		<jms:active-mq-connection >
+			<!-- <reconnection failsDeployment="false">
+				<reconnect count="3" frequency="1000"/>
+			</reconnection> -->
+			<jms:factory-configuration brokerUrl="${activeMQ.brokerUrl}" maxRedelivery="3" redeliveryDelay="1000"/>
+			
+		</jms:active-mq-connection>
+	</jms:config>
+	
+</mule>

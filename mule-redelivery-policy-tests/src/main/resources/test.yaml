@@ -1,0 +1,10 @@
+http:
+  host: "0.0.0.0"
+  port: "9091"
+  
+csvToLogger:
+  inputDir: /Users/vinay/Documents/input/csvToLogger
+# inputDir: e:\\tmp\\input\\toLogger
+  frequencyInSeconds: "30"
+  maxConcurrency: "1"
+  initialState: "started"  

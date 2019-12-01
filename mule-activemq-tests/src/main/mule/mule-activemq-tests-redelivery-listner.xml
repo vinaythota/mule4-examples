@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="mule-activemq-tests-redelivery-Flow" doc:id="c8f3662a-84b1-4ea5-9f84-3f871ad46d7d" >
+		<jms:listener doc:name="Listener" doc:id="9a39a89b-2e29-488f-a33b-cf230a329dd7" config-ref="JMS_Config" destination="${activeMQ.retryTestQueue}" ackMode="AUTO">
+			<redelivery-policy maxRedeliveryCount="2"/>
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="message received" doc:id="5d85592c-6cb2-4177-8d86-ac2f62b3c03c" message="received a message from retry queue: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="e9bdbcbc-5a77-4108-b5c3-40def0fc136f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	test: 1/0
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7064eeb7-0e48-40dd-aceb-1e637e1fed11" message="after exception"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2882ed38-42f1-43d4-93f1-32bfdfef78f4" type="MULE:REDELIVERY_EXHAUSTED">
+				<logger level="INFO" doc:name="Logger" doc:id="a2b4b7f6-b2f3-4b67-8a80-56e187629015" message="Redelivery Exhausted Buddy, send this payload to DLQ: #[payload]"/>
+				<jms:publish doc:name="to DLQ" doc:id="0878161d-f23c-4600-ac1f-f828f873642b" config-ref="JMS_Config" destination="${activeMQ.retryTestQueueDLQ}"/>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

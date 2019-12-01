@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="mule-redelivery-policy-tests-http-Flow" doc:id="7a6bbd16-29ff-4f05-8161-a9c85c3d4c87" >
+		<http:listener doc:name="Listener" doc:id="d3e92dc6-3de0-4e58-824d-c336bcb5c539" config-ref="Http_Listner" path="/">
+<!-- 			<redelivery-policy maxRedeliveryCount="3" objectStore="retryStore"/> -->
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="c89655de-a163-4c10-b8e0-0fcddb64c523" message="Received a request for redelivery policy HTTP test, payload: #[payload]"/>
+		<raise-error doc:name="Raise error" doc:id="ddef91ce-7c7e-45bf-8bd2-ef9ce48e32bf" type="MYAPP:MY_CUSTOM_ERROR" description="this is test error"/>
+	</flow>
+</mule>
