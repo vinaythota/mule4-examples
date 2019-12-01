@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<flow name="batch-testFlow" doc:id="578f9837-9174-4953-9932-92cd6a915d2b" >
+		<http:listener path="/batchtest" config-ref="http_listner_config"/>
+		<logger message="received request for batch test"/>
+		<set-payload value="#[['1','2','3','4','5']]"/>
+		<batch:job jobName="batch_job" blockSize="${batch.blockSize}">
+			<batch:process-records>
+				<batch:step name="step_1" >
+				<logger message="started processing step 1 with payload: #[payload]" level="INFO"/>
+					<flow-ref doc:name="call to backend service" doc:id="58c7f374-ce42-4730-a9a6-b36ccf620f5d" name="backend-server-api-flow"/>
+					<logger level="INFO" doc:name="Logger" doc:id="e0ec156b-7fb5-4b39-a622-125d88a9f2ed" message="completed processing step 1 with payload: #[payload]"/>
+			</batch:step>
+			<batch:step name="step_2">
+				<logger message="processed step 2 with payload: #[payload]"/>
+			</batch:step>
+			</batch:process-records>
+			
+		</batch:job>
+	</flow>
+	<flow name="backend-server-api-flow" doc:id="7f9f2266-4fab-4502-8204-dd1ffa1e2c0f" >
+		<http:listener doc:name="Listener" doc:id="5b12e71d-c024-4456-b2cd-04930a517325" config-ref="http_listner_config_backend_server" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="240783d8-af64-4f25-8ad7-e9681905f841" message="received request to backend server with payload: #[payload]"/>
+		<scripting:execute doc:name="Execute" doc:id="4a07679b-11e5-420e-beae-9934feebfb73" engine="groovy">
+			<scripting:code >if(payload == '1'){
+	Thread.sleep(${server.sleepTimeInMillis});
+}
+return payload;</scripting:code>
+		</scripting:execute>
+	</flow>
+</mule>

@@ -1,0 +1,10 @@
+http:
+  host: "localhost"
+  port: "8091"
+  portBackendServer: "8092"
+  
+batch:
+  blockSize: "5"
+
+server:
+  sleepTimeInMillis: "60000"
