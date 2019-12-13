@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+  
+  	
+	<flow name="csv-to-logger-for-each-test-max-concurrency-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" initialState="${csvToLoggerTestMaxConcurrency.initialState}" maxConcurrency="1" >
+		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="${csvToLoggerTestMaxConcurrency.inputDir}" watermarkMode="MODIFIED_TIMESTAMP">
+			<scheduling-strategy >
+				<fixed-frequency frequency="${csvToLoggerTestMaxConcurrency.frequencyInSeconds}" timeUnit="SECONDS" startDelay="${csvToLoggerTestMaxConcurrency.startDelay}"/>
+			</scheduling-strategy>
+			<file:matcher filenamePattern="*.csv"/>
+		</file:listener>
+		<logger level="INFO" doc:name="msg rcvd" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="CSV file received, file name: #[attributes.fileName]" category="com.vinay.csv-to-logger"/>
+		<scripting:execute doc:name="Execute" doc:id="44a8e50d-7f5a-4308-aef2-b504d1af8e36" engine="groovy">
+			<scripting:code >Thread.sleep(60000);
+return payload;</scripting:code>
+		</scripting:execute>
+		<ee:transform doc:name="as iterator" doc:id="1fdfca86-ae52-4bb8-8e36-fc8d046caf08" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload as Iterator]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="a69e9d60-6e0d-4175-bd62-12d21476988c" >
+			<logger level="INFO" doc:name="log each " doc:id="36dcb8d7-06a2-4cdc-a128-f7f8c9b3905b" message="inside loop: #[payload], fileName:  #[attributes.fileName]" category="com.vinay.csv-to-logger" />
+		</foreach>
+		<logger level="INFO" doc:name=" processing completed" doc:id="763acbaa-803b-4fd5-aedb-f2d2e8ee68c2" message="CSV file processing completed, file name: #[attributes.fileName]"/>
+		<!-- <logger level="INFO" doc:name="payload after for each" doc:id="5fe6ac65-8b68-46e5-8fb1-0360e01cc4e7" message="payload after for each loop: #[payload]"/>
+		<foreach doc:name="For Each" doc:id="6ccbbbdb-1e3b-4f66-8e64-5d6f2f7e1465" >
+			<logger level="INFO" doc:name="Logger" doc:id="bd4a8c0a-dd3b-42fd-986f-435d3befa28d" message="payload in second for each: #[payload]"/>
+		</foreach> -->
+	</flow>
+</mule>

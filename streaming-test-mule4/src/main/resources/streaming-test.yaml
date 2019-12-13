@@ -6,6 +6,13 @@ csvToLogger:
   frequencyInSeconds: "3600"
   maxConcurrency: "1"
   startDelay: "120"
+  
+csvToLoggerTestMaxConcurrency:
+  initialState: started
+  inputDir: /opt/Documents/input/csvToLogger
+  frequencyInSeconds: "120"
+  maxConcurrency: "1"
+  startDelay: "10"
 
 #using batch
 csvToLoggerBatch:
@@ -18,7 +25,7 @@ csvToLoggerBatch:
 
 #using for each
 xmlToLogger:
-  initialState: started
+  initialState: stopped
   inputDir: /opt/Documents/input/xmlToLogger
 # inputDir: e:\\tmp\\input\\toLogger
   frequencyInSeconds: "3600"

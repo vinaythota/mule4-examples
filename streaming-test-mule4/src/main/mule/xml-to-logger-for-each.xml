@@ -16,17 +16,17 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		</file:listener>
 		<logger level="INFO" doc:name="msg rcvd" doc:id="8432515c-7727-43b1-87e5-422a3d7b551f" message="XML message received, file name: #[attributes.fileName]" category="com.vinay.csv-to-logger"/>
 
-<!-- 	<ee:transform doc:name="Transform Message"
+	<ee:transform doc:name="Transform Message"
 		doc:id="54eebd58-302d-4b91-b7c4-df2ee05c6aaa">
 		<ee:message>
 			<ee:set-payload><![CDATA[%dw 2.0
-output application/json
--&#45;&#45;
-payload.orders mapObject {
+output application/java
+---
+(payload.orders mapObject {
 	($$): $
-}]]></ee:set-payload>
+}) as Iterator]]></ee:set-payload>
 		</ee:message>
-	</ee:transform>  -->
+	</ee:transform> 
 		<foreach doc:name="For Each" doc:id="d099dd46-0b03-437c-a341-aa16611a234a">
 			<logger level="INFO" doc:name="log each " doc:id="f971c766-642d-4591-9ac6-885b1c1930b0" message="inside loop: #[payload]" category="com.vinay.csv-to-logger" />
 		</foreach>

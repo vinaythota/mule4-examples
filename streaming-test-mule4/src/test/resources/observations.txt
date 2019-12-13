@@ -12,3 +12,12 @@ Use - to get files which can cause OutOfMemory when we don't use transform messa
     - we don't need the dataweave, as data is going to be streamed and written to the disk before the batch job starts
     
 3. Reading from a Huge XML file and want to process through for each scope:
+
+     a. if we just use: source, logger and for each - then OutOfMemory Error
+     b. if we use: source, logger, transform message, for each - then OutOfMemory Error
+     c. if we use: source, logger, transform message as Iterator, for each - then ALSO OutOfMemory Error
+     
+     
+     
+Attributes are not available inside for each loop??
+	https://docs.mulesoft.com/mule-runtime/4.2/for-each-scope-concept
