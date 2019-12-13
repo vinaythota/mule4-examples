@@ -17,9 +17,8 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 			<file:matcher filenamePattern="*.csv"/>
 		</file:listener>
 		<logger level="INFO" doc:name="msg rcvd" doc:id="0423ff42-9d50-4e15-96e1-5df5f9cd0985" message="CSV file received, file name: #[attributes.fileName]" category="com.vinay.csv-to-logger"/>
-		<scripting:execute doc:name="Execute" doc:id="44a8e50d-7f5a-4308-aef2-b504d1af8e36" engine="groovy">
-			<scripting:code >Thread.sleep(60000);
-return payload;</scripting:code>
+		<scripting:execute doc:name="Execute" doc:id="44a8e50d-7f5a-4308-aef2-b504d1af8e36" engine="groovy" target="dummy">
+			<scripting:code >Thread.sleep(15000);</scripting:code>
 		</scripting:execute>
 		<ee:transform doc:name="as iterator" doc:id="1fdfca86-ae52-4bb8-8e36-fc8d046caf08" >
 			<ee:message >
