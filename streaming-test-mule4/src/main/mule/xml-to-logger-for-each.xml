@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+  	
+	<flow name="xml-to-logger-xml-input-flow" doc:id="f122f178-781a-4b26-a5a3-412a018bcfe3" initialState="${xmlToLogger.initialState}" maxConcurrency="1">
+		<file:listener doc:name="On New or Updated File" doc:id="69a7ba9e-9dd4-40c1-b991-9264c009191b" directory="${xmlToLogger.inputDir}" watermarkMode="MODIFIED_TIMESTAMP">
+			<scheduling-strategy >
+				<fixed-frequency frequency="${xmlToLogger.frequencyInSeconds}" timeUnit="SECONDS" startDelay="${xmlToLogger.startDelay}"/>
+			</scheduling-strategy>
+			<file:matcher filenamePattern="*.xml"/>
+		</file:listener>
+		<logger level="INFO" doc:name="msg rcvd" doc:id="8432515c-7727-43b1-87e5-422a3d7b551f" message="XML message received, file name: #[attributes.fileName]" category="com.vinay.csv-to-logger"/>
+
+<!-- 	<ee:transform doc:name="Transform Message"
+		doc:id="54eebd58-302d-4b91-b7c4-df2ee05c6aaa">
+		<ee:message>
+			<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+-&#45;&#45;
+payload.orders mapObject {
+	($$): $
+}]]></ee:set-payload>
+		</ee:message>
+	</ee:transform>  -->
+		<foreach doc:name="For Each" doc:id="d099dd46-0b03-437c-a341-aa16611a234a">
+			<logger level="INFO" doc:name="log each " doc:id="f971c766-642d-4591-9ac6-885b1c1930b0" message="inside loop: #[payload]" category="com.vinay.csv-to-logger" />
+		</foreach>
+	</flow>
+</mule>

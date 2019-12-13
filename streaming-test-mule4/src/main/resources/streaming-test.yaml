@@ -1,13 +1,33 @@
+#using for each
 csvToLogger:
-  initialState: started
-  inputDir: /Users/vinay/Documents/input/csvToLogger
+  initialState: stopped
+  inputDir: /opt/Documents/input/csvToLogger
 # inputDir: e:\\tmp\\input\\toLogger
-  frequencyInSeconds: "3"
+  frequencyInSeconds: "3600"
   maxConcurrency: "1"
-  
-csvToAnotherFile:
+  startDelay: "120"
+
+#using batch
+csvToLoggerBatch:
+  initialState: stopped
+  inputDir: /opt/Documents/input/csvToLogger
+# inputDir: e:\\tmp\\input\\toLogger
+  frequencyInSeconds: "3600"
+  maxConcurrency: "1"
+  startDelay: "120"
+
+#using for each
+xmlToLogger:
   initialState: started
-  inputDir: /Users/vinay/Documents/input/csvToAnotherFile
+  inputDir: /opt/Documents/input/xmlToLogger
+# inputDir: e:\\tmp\\input\\toLogger
+  frequencyInSeconds: "3600"
+  maxConcurrency: "1"
+  startDelay: "120"
+
+csvToAnotherFile:
+  initialState: stopped
+  inputDir: /opt/Documents/input/csvToAnotherFile
   outputDir: /Users/vinay/Documents/output/csvToAnotherFile
 # inputDir: e:\\tmp\\input\\toAnotherDir
   frequencyInSeconds: "3"
@@ -15,3 +35,16 @@ csvToAnotherFile:
   maxConcurrency: "1"
   
 seperator: "/"
+
+mysql:
+  host: "localhost"
+  port: "3306"
+  user: "test"
+  password: "test123"
+  database: "test"
+
+query:
+  fetchSize: "1"
+  maxRows: "-1"
+  
+schdulerFrequencyInSeconds: "60"

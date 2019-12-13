@@ -1,0 +1,14 @@
+Use - to get files which can cause OutOfMemory when we don't use transform message for testing with for each scope
+
+	    generateXMLPayload("orders.xml", 2000000); -> orders_47MB.xml
+		generateCSVPayload("orders.csv", 2000000); -> orders_33MB.csv
+
+1. Reading from a Huge CSV file and want to process through for each scope:
+
+   - we have to use "Transform Message" component (to convert the payload as Iterator) to stream the data and send to "for each" scope
+   
+2. Reading from a Huge CSV file and want to process through a batch scope
+   
+    - we don't need the dataweave, as data is going to be streamed and written to the disk before the batch job starts
+    
+3. Reading from a Huge XML file and want to process through for each scope:
