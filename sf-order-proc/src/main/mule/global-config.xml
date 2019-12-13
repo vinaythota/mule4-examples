@@ -20,7 +20,9 @@ http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/sche
 		property_host="${sf-order-db-sys.host}" 
 		property_port="${sf-order-db-sys.port}" 
 		property_protocol="${sf-order-db-sys.protocol}" 
-		property_basePath="${sf-order-db-sys.basePath}" />
+		property_basePath="${sf-order-db-sys.basePath}">
+		<sf-order-sys:connection />
+	</sf-order-sys:config>
 		
 	<sf-product-sys:config name="Sf_product_sys_Config" 
 		doc:name="Sf-product-sys Config" 
@@ -28,7 +30,9 @@ http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/sche
 		property_host="${sf-product-db-sys.host}" 
 		property_port="${sf-product-db-sys.port}" 
 		property_protocol="${sf-product-db-sys.protocol}" 
-		property_basePath="${sf-product-db-sys.basePath}"/>
+		property_basePath="${sf-product-db-sys.basePath}">
+		<sf-product-sys:connection />
+	</sf-product-sys:config>
 		
 	<sf-customer-sys:config name="Sf_customer_sys_Config" 
 		doc:name="Sf-customer-sys Config" 
@@ -36,7 +40,9 @@ http://www.mulesoft.org/schema/mule/sf-customer-sys http://www.mulesoft.org/sche
 		property_host="${sf-customer-db-sys.host}" 
 		property_port="${sf-customer-db-sys.port}" 
 		property_protocol="${sf-customer-db-sys.protocol}" 
-		property_basePath="${sf-customer-db-sys.basePath}"/>
+		property_basePath="${sf-customer-db-sys.basePath}">
+		<sf-customer-sys:connection />
+	</sf-customer-sys:config>
 	
 	<http:request-config name="HTTP_Request_configuration_StandaloneApp" doc:name="HTTP Request configuration" doc:id="0a95d107-991a-4ca8-85e5-d19a22089679" >
 		<http:request-connection host="${sf-standalone-app.host}" port="${sf-standalone-app.port}" />

@@ -11,14 +11,14 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 	<flow name="sf-standalone-appFlow" doc:id="d5e03db2-6f75-410b-b4ea-a439bae66d1e" >
 		<http:listener doc:name="Listener" doc:id="d1b9d7c9-d883-4950-9d36-62b08aaa094e" config-ref="HTTP_Listener_config" path="/${path}"/>
 		<logger level="INFO" doc:name="Logger" doc:id="aa5e0a23-b412-4266-8ccc-d93cf04c7752" message="received request to standalone app: #[payload]"/>
+		<set-payload value="#['Hello from standalone']" doc:name="Set Payload" doc:id="b1ce84f0-138e-4bfd-9fbc-4a03f1caeb62" />
+	</flow>
+	<flow name="sf-standalone-app-testCustomBusinessEvent" doc:id="d583ccbd-b98c-4480-9d70-98152ad074ca" tracking:enable-default-events="true">
+		<http:listener doc:name="Listener" doc:id="163f68cb-de73-4a45-8771-5c07ccdeef91" config-ref="HTTP_Listener_config" path="/${eventsTestPath}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c090350f-69b9-4bac-8c30-6303eac7e69c" message="received request to default event test flow: #[payload]"/>
 		<tracking:custom-event doc:name="Custom Business Event" doc:id="00a7e221-bd67-412c-9166-6221585e6a24" event-name="Received an event">
 			<tracking:meta-data key="amount" value="#[payload.amount]" />
 		</tracking:custom-event>
-		<set-payload value="#['Hello from standalone']" doc:name="Set Payload" doc:id="b1ce84f0-138e-4bfd-9fbc-4a03f1caeb62" />
-	</flow>
-	<flow name="sf-standalone-app-testDefaultEvent" doc:id="d583ccbd-b98c-4480-9d70-98152ad074ca" tracking:enable-default-events="true">
-		<http:listener doc:name="Listener" doc:id="163f68cb-de73-4a45-8771-5c07ccdeef91" config-ref="HTTP_Listener_config" path="/${eventsTestPath}"/>
-		<logger level="INFO" doc:name="Logger" doc:id="c090350f-69b9-4bac-8c30-6303eac7e69c" message="received request to default event test flow: #[payload]"/>
-		<set-payload value="#['response from default event test flow']" doc:name="Set Payload" doc:id="664d9b43-1593-41ff-a08f-1f85a12e7249" />
+		<set-payload value="#['response from custom business event flow']" doc:name="Set Payload" doc:id="664d9b43-1593-41ff-a08f-1f85a12e7249" />
 	</flow>
 </mule>
