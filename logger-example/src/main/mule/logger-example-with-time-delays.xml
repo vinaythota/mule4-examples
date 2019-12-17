@@ -6,11 +6,20 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
-	<flow name="logger-exampleFlow" doc:id="3bf3c0ea-c37a-49c4-9893-d5d64bb209e2" >
-		<http:listener doc:name="Listener" doc:id="52c748bf-4c25-4c0c-87ee-fc86181082e9" config-ref="HTTP_Listener_config" path="/"/>
-		<logger level="INFO" doc:name="async logger" doc:id="7dc60256-01df-4274-92bb-6b27cfb4d399" message="request received, first async log" category="com.vinay.async"/>
-		<logger level="DEBUG" doc:name="sync logger" doc:id="4f4343d7-f878-4aaa-aa3d-5d0c80e16130" message="second, sync log - DEBUG" category="com.vinay.sync" />
-		<logger level="DEBUG" doc:name="async logger" doc:id="fcef867d-6294-43d2-b0ed-376380f4555a" message="third, async log - DEBUG" category="com.vinay.async"/>
+	<flow name="logger-with-time-delay-exampleFlow" doc:id="3bf3c0ea-c37a-49c4-9893-d5d64bb209e2" >
+		<http:listener doc:name="Listener" doc:id="52c748bf-4c25-4c0c-87ee-fc86181082e9" config-ref="HTTP_Listener_config" path="/timeDelay"/>
+		<logger level="INFO" doc:name="async logger" doc:id="7dc60256-01df-4274-92bb-6b27cfb4d399" message="#[output application/json
+import java!com::test::Test
+---
+Test::getDataToLog('first async log')]" category="com.vinay.async"/>
+		<logger level="INFO" doc:name="sync logger" doc:id="4f4343d7-f878-4aaa-aa3d-5d0c80e16130" message="#[output application/json
+import java!com::test::Test
+---
+Test::getDataToLog('Sync Log')]" category="com.vinay.sync" />
+		<logger level="INFO" doc:name="async logger" doc:id="fcef867d-6294-43d2-b0ed-376380f4555a" message="#[output application/json
+import java!com::test::Test
+---
+Test::getDataToLog('second async log')]" category="com.vinay.async"/>
 		<ee:transform doc:name="Transform Message" doc:id="9b07b53e-457a-456c-8cae-d2572414566b">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -18,7 +27,7 @@ output application/json
 import java!com::test::Test
 ---
 {
-	message: 'message from DW'
+	message: Test::getDataToLog('message from DW')
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

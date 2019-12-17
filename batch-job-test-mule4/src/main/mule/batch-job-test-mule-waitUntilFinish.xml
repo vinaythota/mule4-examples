@@ -26,12 +26,8 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 			<batch:process-records >
 				<batch:step name="STEP-1" doc:id="0d7eed3e-c4b7-4ed9-b21a-7a8ba5934990" >
 					<set-variable value="Inside Variable In Step1" doc:name="Set Variable" doc:id="a250510b-8cd5-4322-82a1-1348b6352b56" variableName="insideVariable1" />
-					<scripting:execute doc:name="Execute" doc:id="ae0a437b-3923-4dd9-9bdc-e4dee2a7d5a2" engine="groovy">
-						<scripting:code >Thread.sleep(10000);
-return payload;</scripting:code>
-					</scripting:execute>
 					<logger level="INFO" doc:name="Logger" doc:id="f81cb2fe-85e9-4198-9a94-d1ece7f5bef2" message="###  Step 1: #[payload], Outside Variable: #[vars.outSideVar], Inside Variable One: #[vars.insideVariable1] ###" />
-					<batch:aggregator doc:name="Batch Aggregator" doc:id="8460faa7-54a7-4f00-be8f-78ef86e96bfa" size="5">
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="8460faa7-54a7-4f00-be8f-78ef86e96bfa" size="2">
 						<ee:transform doc:name="Transform Message" doc:id="ab86551c-1813-455e-8c3e-d28e71c19d2f" >
 							<ee:message >
 								<ee:set-payload ><![CDATA[%dw 2.0
