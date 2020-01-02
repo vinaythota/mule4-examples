@@ -30,11 +30,11 @@
             <AppenderRef ref="file" />
         </AsyncRoot>
         
-        <AsyncLogger name="com.vinay.sync" level="INFO">
-        	<AppenderRef ref="file" />
+        <AsyncLogger name="com.vinay.async" level="DEBUG">
+        		<AppenderRef ref="file" />
         </AsyncLogger>
         
-        <Logger name="com.vinay.async" level="INFO">
+        <Logger name="com.vinay.sync" level="DEBUG">
             <AppenderRef ref="file" />
         </Logger>
         

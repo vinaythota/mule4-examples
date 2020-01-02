@@ -9,7 +9,6 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 
 	<flow name="csv-to-another-file-flow" doc:id="c9927ecd-b01e-4635-9d50-f09ad6d61177" maxConcurrency="${csvToAnotherFile.maxConcurrency}" initialState="${csvToAnotherFile.initialState}">
 		<file:listener doc:name="On New or Updated File" doc:id="083b4f71-0cc3-4c14-ada5-e06db398415e" directory="${csvToAnotherFile.inputDir}" watermarkMode="MODIFIED_TIMESTAMP" recursive="false" outputMimeType="application/csv">
-			<ee:repeatable-file-store-stream inMemorySize="5024" />
 			<scheduling-strategy >
 				<fixed-frequency frequency="${csvToAnotherFile.frequencyInSeconds}" timeUnit="SECONDS"/>
 			</scheduling-strategy>

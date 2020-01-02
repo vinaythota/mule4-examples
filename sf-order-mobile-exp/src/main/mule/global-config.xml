@@ -19,7 +19,9 @@ http://www.mulesoft.org/schema/mule/sf-order-proc http://www.mulesoft.org/schema
 		property_host="${sf-order-proc.host}" 
 		property_port="${sf-order-proc.port}" 
 		property_protocol="${sf-order-proc.protocol}" 
-		property_basePath="${sf-order-proc.basePath}" />
+		property_basePath="${sf-order-proc.basePath}">
+		<sf-order-proc:connection />
+	</sf-order-proc:config>
 	
 	
 </mule>

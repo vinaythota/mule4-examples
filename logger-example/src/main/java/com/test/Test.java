@@ -3,11 +3,11 @@ package com.test;
 
 public class Test {
 	
-	public static String getDataToLog() throws InterruptedException {
+	public static String getDataToLog(String message) throws InterruptedException {
 		
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 		
-		return "Test Message from Java Class";
+		return "Test Message from Java Class: " + message;
 	}
 
 }

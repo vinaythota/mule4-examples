@@ -11,8 +11,9 @@ public class PayloadGenerator {
 	
 	public static void main(String[] args) throws IOException {
 		
-		//generateXMLPayload("orders.xml", 100000000);
-		generateCSVPayload("orders.csv", 1000000);
+		//generateXMLPayload("orders.xml", 2000000);
+		//generateXMLPayload("orders.xml", 5);
+		generateCSVPayload("orders.csv", 2000000);
 		
 	}
 	

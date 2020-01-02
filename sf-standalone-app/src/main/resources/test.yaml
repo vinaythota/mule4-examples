@@ -3,4 +3,4 @@ http:
 
 path: "standalone"
 
-eventsTestPath: "defaultEvent"
+eventsTestPath: "customEvent"
