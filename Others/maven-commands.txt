@@ -1,9 +1,31 @@
-export anypoint_username="vinay_sep2019"
-export anypoint_password="Mule!o98"
-export org_id="vthota"
+<username>${env.AP_USERNAME}</username>
+<password>${env.AP_PASSWORD}</password>
+<org.id>${env.ORG_ID}</org.id>
 
 mvn clean package mule:deploy "-Dgatekeeper=disabled" "-Dapi.id=1234234"
+mvn clean package mule:deploy "-Dgatekeeper=enabled" "-Dapi.id=15941055"
+Projects:
+sf-order-mobile-exp -> 
+	sf-order-proc -> 
+	  sf-order-db-sys, sf-product-db-sys, sf-customer-db-sys
+sf-standalone-app
 
-1. Change the environ vars above: user name and org id
-2. make changes in the proc api to point to right sys and standalone
+
+1. Create sf-common-types.raml 
+	as RAML fragment in design center and publish to exchage
+2. create sf-order-mobile-exp -> sf-order-proc -> 
+	  sf-order-db-sys, sf-product-db-sys, sf-customer-db-sys
+    as APIs in design center and publish them to exchange
+3. Manage APIs sf-order-mobile-exp -> sf-order-proc -> 
+	  sf-order-db-sys, sf-product-db-sys, sf-customer-db-sys
+	in API Manager as direct end points  and obtain API ids
+	sf-order-mobile-exp -> 15941055
+	sf-order-proc -> 15941059
+	sf-order-db-sys -> 15941060
+	sf-product-db-sys -> 15941061
+	sf-customer-db-sys -> 15941062
+	
+4. Change the environ vars above: user name and org id
+5. make changes in each project test.yaml to user org id and api id 
+6. make changes in the proc api to point to right sys and standalone
     i.e. change in test.yaml, replace org id

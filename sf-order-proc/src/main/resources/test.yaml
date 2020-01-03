@@ -2,30 +2,30 @@ http:
   port: "8085"
 
 api:
-  id: "15792267"
+  id: "15941059"
 
 waitTimeForPostInMillis: "1000"
 
 
 sf-order-db-sys:
-  host: sf-order-db-sys-vthota-dev.us-e2.cloudhub.io
+  host: sf-order-db-sys-jan2020-dev.us-e2.cloudhub.io
   port: "80"
   protocol: "HTTP"
   basePath: "/api"
   
 sf-product-db-sys:
-  host: sf-product-db-sys-vthota-dev.us-e2.cloudhub.io
+  host: sf-product-db-sys-jan2020-dev.us-e2.cloudhub.io
   port: "80"
   protocol: "HTTP"
   basePath: "/api"
 
 sf-customer-db-sys:
-  host: sf-customer-db-sys-vthota-dev.us-e2.cloudhub.io
+  host: sf-customer-db-sys-jan2020-dev.us-e2.cloudhub.io
   port: "80"
   protocol: "HTTP"
   basePath: "/api"
   
 sf-standalone-app:
-  host: sf-standalone-app-vthota-dev.us-e2.cloudhub.io
+  host: sf-standalone-app-jan2020-dev.us-e2.cloudhub.io
   port: "80"
   path: "/standalone"

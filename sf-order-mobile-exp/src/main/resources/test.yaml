@@ -2,10 +2,10 @@ http:
   port: "8085"
 
 api:
-  id: "15792267"
+  id: "15941055"
 
 sf-order-proc:
-  host: sf-order-proc-vthota-dev.us-e2.cloudhub.io
+  host: sf-order-proc-jan2020-dev.us-e2.cloudhub.io
   port: "80"
   protocol: "HTTP"
   basePath: "/api"

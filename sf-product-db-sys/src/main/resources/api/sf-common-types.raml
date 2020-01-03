@@ -30,3 +30,15 @@ types:
           properties:
             productId: string
             quantity: integer
+
+  OrderDetail:
+    properties:
+      orderId: string
+      customerDetails: Customer
+      lineItems: 
+        type: array
+        items: 
+          type: object
+          properties:
+            productDetails: Product
+            quantity: integer
