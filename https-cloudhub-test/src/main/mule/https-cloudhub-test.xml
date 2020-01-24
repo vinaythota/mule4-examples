@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="https-cloudhub-testFlow" doc:id="33e3fcc2-6b41-47f4-bae1-3d7d37a271ae" >
+		<http:listener doc:name="Listener" doc:id="93d2c0f7-90ad-4781-b56c-aeb4911364e7" config-ref="HTTPS_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3f9b1432-96b9-4ef8-874e-8fb77237c448" message="received a request for https cloudhub test"/>
+		<ee:transform doc:name="Transform Message" doc:id="4b0afbd2-d22e-43d8-a07b-d34070283708" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "hello: " ++ attributes.queryParams.name
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

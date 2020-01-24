@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<flow name="mule-redelivery-policy-tests-file-Flow" doc:id="7a6bbd16-29ff-4f05-8161-a9c85c3d4c87" >
 		<file:listener doc:name="On New or Updated File" doc:id="f72a7e77-7ffa-4d93-b6e3-505de685009a" directory="${csvToLogger.inputDir}" watermarkMode="MODIFIED_TIMESTAMP">
-			<redelivery-policy />
+			<redelivery-policy maxRedeliveryCount="6"/>
 			<ee:repeatable-file-store-stream inMemorySize="5024" />
 			<scheduling-strategy >
 				<fixed-frequency frequency="${csvToLogger.frequencyInSeconds}" timeUnit="SECONDS"/>

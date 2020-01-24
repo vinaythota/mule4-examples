@@ -7,10 +7,11 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
     
     <apikit:config name="sf-employee-sys-config" api="resource::e562169a-d5eb-43e3-94b9-8c0ca89d4897:sf-employee-sys:1.0.0:raml:zip:sf-employee-sys.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     
-    <api-gateway:autodiscovery apiId="${apiID}" doc:name="API Autodiscovery" doc:id="27a423e8-1105-4f4b-85f1-40c4a57b1fea" flowRef="sf-employee-sys-main" />
-	
+<!--     <api-gateway:autodiscovery apiId="${apiID}" doc:name="API Autodiscovery" doc:id="27a423e8-1105-4f4b-85f1-40c4a57b1fea" flowRef="sf-employee-sys-main" />
+ -->	
+ 
 	<flow name="sf-employee-sys-main">
-        <http:listener config-ref="sf-employee-sys-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="HTTPS_Listener_config" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">

@@ -1,0 +1,1 @@
+keytool -genkeypair -keystore keystore.jks   -dname "CN=localhost, OU=Salesforce, O=Vinay, L=Hyderabad, ST=Telangana, C=India"  -keypass password  -storepass password  -keyalg RSA  -sigalg SHA1withRSA  -keysize 2048  -alias mule  -ext SAN=DNS:localhost,IP:127.0.0.1 -validity 9999

@@ -10,11 +10,12 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	
 	<configuration-properties file="test.yaml" />
 	
-	<http:listener-config name="HTTPS_Listener_config" doc:name="HTTP Listener config" doc:id="29c91a85-8fc8-40e7-b89d-922353cf7a10" >
+	<http:listener-config name="HTTPS_Listener_config" doc:name="HTTP Listener config" doc:id="f2d3b32d-9d74-4454-ac5f-9dd48421cb41" >
 		<http:listener-connection host="0.0.0.0" port="${https.port}" protocol="HTTPS">
 			<tls:context>
 				<tls:key-store alias="${keystore.alias}" password="${keystore.password}" keyPassword="${keystore.keyPassword}" path="keystore.jks" type="jks"/>
 			</tls:context>
 		</http:listener-connection>
 	</http:listener-config>
+	
 </mule>

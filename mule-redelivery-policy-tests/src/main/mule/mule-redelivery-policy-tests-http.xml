@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="8b5f4528-eeac-486b-8435-8ebbb7120b57">
+		<vm:connection />
+		<vm:queues >
+			<vm:queue queueName="DLQ" />
+		</vm:queues>
+	</vm:config>
 	<flow name="mule-redelivery-policy-tests-http-Flow" doc:id="7a6bbd16-29ff-4f05-8161-a9c85c3d4c87" >
 		<http:listener doc:name="Listener" doc:id="d3e92dc6-3de0-4e58-824d-c336bcb5c539" config-ref="Http_Listner" path="/">
+			<redelivery-policy />
+			<http:error-response >
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
 <!-- 			<redelivery-policy maxRedeliveryCount="3" objectStore="retryStore"/> -->
 		</http:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="c89655de-a163-4c10-b8e0-0fcddb64c523" message="Received a request for redelivery policy HTTP test, payload: #[payload]"/>
 		<raise-error doc:name="Raise error" doc:id="ddef91ce-7c7e-45bf-8bd2-ef9ce48e32bf" type="MYAPP:MY_CUSTOM_ERROR" description="this is test error"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b5c41537-84d3-45d3-89eb-8152fb349453" type="MULE:REDELIVERY_EXHAUSTED">
+				<logger level="INFO" doc:name="send to error queue" doc:id="3e0ff912-d7eb-43b7-bb9c-c98bf86a71a0" message="redeliveries exchaused, sending to error queue"/>
+				<ee:transform doc:name="Transform Message" doc:id="32a33ec6-9520-4039-9007-8bd005b2d9a6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	error: 'can not process this request any more, your message has been backed up and processed later'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<vm:publish doc:name="send to DLQ" doc:id="83c14ef5-0929-4e1b-b3c0-a4443676e4cd" config-ref="VM_Config" queueName="DLQ"/>
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 </mule>
