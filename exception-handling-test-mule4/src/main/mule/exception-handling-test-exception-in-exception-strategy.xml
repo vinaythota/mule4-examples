@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="exception-handling-test-exception-in-exception-strategyFlow" doc:id="5e44013d-d1ee-4397-9939-b5e68f07e598" >
+		<http:listener doc:name="Listener" doc:id="52ed7f5a-e11e-4263-8583-ab5318df05c4" config-ref="HTTP_Listener_config" path="/exceptionInException"/>
+		<logger level="INFO" doc:name="Logger" doc:id="de4a665d-71f6-45ce-be2a-413790c6d709" message="received Request for exception in exception, payload: #[payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="11fa9d0a-e118-45a4-bbd5-c21b334799fb" name="create-exception-in-exception-handling-flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cb189c5c-91b5-4c5a-8514-80aecbd8a056" message="after calling flow, payload: #[payload]"/>
+	</flow>
+	<flow name="create-exception-in-exception-handling-flow" doc:id="d4f65edb-f1ed-495b-9c8a-e0821cd10a97" >
+		<http:request method="GET" doc:name="Request" doc:id="e3ed38b2-a23f-477a-bbb4-25e6b22ac473" config-ref="HTTP_Request_configuration" path="/"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9ec20f86-5e9b-46d7-b6d0-667a69e1d52c" type="HTTP:CONNECTIVITY">
+				<logger level="INFO" doc:name="Logger" doc:id="e75af60d-fb7b-47c1-839f-dd44cdddf706" message="exception caused because of connectivity"/>
+				<ee:transform doc:name="Transform Message" doc:id="dd0bebbf-4d1d-4c68-8b4c-32074c1c43f2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	value: 1/0
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
