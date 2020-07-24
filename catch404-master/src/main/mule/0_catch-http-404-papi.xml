@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="abe1d2c3-9bec-4d19-b8e2-af84ec849d41">
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="0_catch-http-404-papiFlow" doc:id="00f196aa-df45-4b1c-807a-b9a6016601fe" >
+		<http:request method="GET" doc:name="Request" doc:id="6baa035c-81ce-499a-b05c-143f639f617d" config-ref="HTTP_Request_configuration" path="/api/throw404" target="response"/>
+		<ee:transform doc:name="Transform Message" doc:id="ab3c00b2-5aff-4a6f-a4f7-cd807a598e56" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.response]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2c7dd146-eeb9-496a-8f7f-28e74e025ca1" type="HTTP:NOT_FOUND">
+				<ee:transform doc:name="Transform Message" doc:id="8c8accb0-3e33-46e9-9928-743643992b2c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Do you even believe in spoons?"
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

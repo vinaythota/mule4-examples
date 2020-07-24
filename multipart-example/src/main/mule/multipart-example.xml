@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="multipart-exampleFlow" doc:id="dddff75a-90c0-4e82-b8db-2bed4469108b" >
+		<http:listener doc:name="Listener" doc:id="d1ee7c56-36f7-4b70-8019-a199a7423f47" config-ref="httpListner" path="/multi-part" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ea14bede-20c3-4229-a21d-d156c81c2877" message="Received Request for Multipart: #[payload]"/>
+		<file:write doc:id="585fb6ce-c6fa-475a-be36-b636509fe2ad" config-ref="fileConfig" path="testFile">
+			<file:content ><![CDATA[#[payload.parts.key2.content]]]></file:content>
+		</file:write>
+	</flow>
+</mule>

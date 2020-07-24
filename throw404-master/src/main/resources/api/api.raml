@@ -1,0 +1,10 @@
+#%RAML 1.0
+title: New API
+
+/throw404:
+  get:
+    responses:
+      404:
+        body:
+          application/json:
+            example: {"message" : "There is no spoon."}

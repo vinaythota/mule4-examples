@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b6935a19-118d-4652-9f66-0e448219bc14" >
+		<http:request-connection host="www.google1.com" port="80" />
+	</http:request-config>
+	<flow name="sf-mule-eventFlow" doc:id="83128902-889a-409b-9d3f-8c1798caae13" >
+		<http:listener doc:name="Listener" doc:id="8fa238bc-fb50-4726-b871-ec1971f7e1c9" config-ref="mule-event-listner" path="/">
+			<http:error-response statusCode="200" reasonPhrase="Error Response">
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger - 1" doc:id="9cb8f8cb-dfcb-4a02-8daf-681d8b0b7bf5" message="Received Request: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="98a04d3d-17ff-4840-9d47-08e59ead8b1b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	name: "vinay"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger - 1A" doc:id="03007daa-3ecd-4a05-b239-17d0bfa0f822" message="Logger 1A"/>
+		<choice doc:name="Choice" doc:id="0a8679c7-976b-4673-9465-fa7e84661a25" >
+			<when expression="#[true]">
+				<set-variable value="#['Hello Vinay']" doc:name="Set Variable" doc:id="00d677fc-f75f-4255-83f5-df42a98d6cdd" variableName="testVar" />
+				<file:write doc:name="Write" doc:id="56fb94fd-3ff0-4c9f-a148-fc872f2be25d" path="test.out">
+					<file:content><![CDATA[#[vars.testVar]]]></file:content>
+				</file:write>
+				<http:request method="GET" doc:name="Request" doc:id="c4aec4e9-ef23-446b-a96e-be0348277462" config-ref="HTTP_Request_configuration" path="/">
+					<error-mapping sourceType="HTTP:CONNECTIVITY" targetType="APP:MYERROR" />
+				</http:request>
+				<logger level="INFO" doc:name="Logger - 2" doc:id="1bcc116f-57a8-429e-8a09-7e07f5820a21" message="Receive Request # 2, #[vars.testVar]" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger - 3" doc:id="ddcaac16-5e75-4ace-ae40-f4970b640019" message="Receive Request # 2"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

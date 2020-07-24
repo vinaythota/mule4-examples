@@ -1,0 +1,13 @@
+#%RAML 1.0
+title: New API
+
+/catch404:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message" : "There in fact was a spoon."
+              }
