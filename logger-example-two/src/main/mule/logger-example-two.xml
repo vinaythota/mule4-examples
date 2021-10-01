@@ -6,18 +6,18 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
-	<flow name="logger-exampleFlow" doc:id="3bf3c0ea-c37a-49c4-9893-d5d64bb209e2" >
-		<http:listener doc:name="Listener" doc:id="52c748bf-4c25-4c0c-87ee-fc86181082e9" config-ref="HTTP_Listener_config" path="/"/>
-		<logger level="INFO" doc:name="async logger" doc:id="7dc60256-01df-4274-92bb-6b27cfb4d399" message="request received, first async log, name is: ${name}" category="com.vinay.async"/>
-		<logger level="DEBUG" doc:name="sync logger" doc:id="4f4343d7-f878-4aaa-aa3d-5d0c80e16130" message="second, sync log - DEBUG" category="com.vinay.sync" />
-		<logger level="DEBUG" doc:name="async logger" doc:id="fcef867d-6294-43d2-b0ed-376380f4555a" message="third, async log - DEBUG" category="com.vinay.async"/>
-		<ee:transform doc:name="Transform Message" doc:id="9b07b53e-457a-456c-8cae-d2572414566b">
+	<flow name="logger-exampleFlow" doc:id="c8d348ae-f320-40c7-a2e6-3d690ed89438" >
+		<http:listener doc:name="Listener" doc:id="76b61989-5a89-469e-8d22-165b1ff8c696" config-ref="HTTP_Listener_config" path="/"/>
+		<logger level="INFO" doc:name="async logger" doc:id="7465b1fe-d38c-445f-8904-b511475db32c" message="example2 - request received, first async log, with shared proerty Name: ${name}" category="com.vinay.async"/>
+		<logger level="DEBUG" doc:name="sync logger" doc:id="190c89c0-933c-43d8-a87b-905913a6684a" message="example2 - second, sync log - DEBUG" category="com.vinay.sync" />
+		<logger level="DEBUG" doc:name="async logger" doc:id="e1120534-bcf8-4674-be48-5b38e23a5a6f" message="example2 - third, async log - DEBUG" category="com.vinay.async"/>
+		<ee:transform doc:name="Transform Message" doc:id="175fdc47-c4dc-4d6b-8f59-323b5c2d05ad">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	message: 'message from DW: ' ++ p('name')
+	message: 'message from DW'
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
