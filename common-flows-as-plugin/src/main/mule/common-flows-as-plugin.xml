@@ -3,7 +3,8 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-	<flow name="test-common-flow" doc:id="722de88d-f33a-4db0-8a6a-843a1fb593d5" >
-		<set-payload value="This is test common flow " doc:name="Set Payload" doc:id="60c59dda-a11d-4d6a-8645-c3361c0307f2" />
+	
+	<flow name="test-common-flow" doc:id="10e0cd30-29d4-422d-ad10-da8ffa5346fa" >
+		<set-payload value="This is test common flow - as plugin" doc:name="Set Payload" doc:id="b7216075-1610-4a7c-98a6-fafce5da436f" />
 	</flow>
 </mule>
