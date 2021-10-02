@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>common-flows-as-plugin</artifactId>
+	<artifactId>common-flows-test-using-plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>common-flows-as-plugin</name>
+	<name>common-flows-test-using-plugin</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,8 +29,16 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
 				<configuration>
-					<classifier>mule-plugin</classifier>
+					<compilerArgs>
+						<args>-parameters</args>
+					</compilerArgs>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -47,6 +55,18 @@
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-sockets-connector</artifactId>
 			<version>1.2.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mycompany</groupId>
+			<artifactId>common-flows-as-plugin</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.module</groupId>
+			<artifactId>mule-java-module</artifactId>
+			<version>1.2.8</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+	<flow name="common-flows-testFlow" doc:id="93a510c2-fafa-4db1-84da-9f7a086a1b7e" >
+		<http:listener doc:name="Listener" doc:id="825efe1d-7fb9-471f-8b98-dcb3665cacf6" config-ref="HTTP_Listener_config" path="/"/>
+		<flow-ref doc:name="Flow Reference" doc:id="b78b0c92-87fd-4ec4-8b40-8ca835e1fd96" name="test-common-flow"/>
+		<java:invoke-static doc:name="Invoke static - add " doc:id="4c974d0a-9166-4cfa-8c30-f1a162bc4f02" target="sumValue" class="com.test.Calculator" method="add(int,int)">
+			<java:args ><![CDATA[#[{
+	arg0: 5,
+	arg1: 15
+}]]]></java:args>
+		</java:invoke-static>
+		<java:invoke-static doc:name="Invoke static - multiple" doc:id="dae76ad0-da49-4abc-a6ce-299b743c29ac" class="com.test.Calculator" method="multiply(int,int)" target="multiplyValue">
+			<java:args ><![CDATA[#[{
+	arg0: 10,
+	arg1: 15
+}]]]></java:args>
+		</java:invoke-static>
+		<ee:transform doc:name="Transform Message" doc:id="9706261e-087d-421c-ad87-991898a9c4fb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message : payload,
+	sumValue: vars.sumValue,
+	multiplyValue: vars.multiplyValue
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</flow>
+</mule>
