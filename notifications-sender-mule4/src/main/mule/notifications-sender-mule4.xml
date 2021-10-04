@@ -10,6 +10,18 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 				config-ref="http_listener_config"
 				path="/sendNotification" />
 		<tracking:transaction id="#[payload.id]" />
-		<logger level="INFO" doc:name="Logger" doc:id="24dc77d2-dc15-42c3-b823-e3ebd3abe50c" message="Request to send notification: #[payload]"/>
+		<tracking:custom-event event-name="trackProductDetails">
+			<tracking:meta-data key="id" value="#[payload.id]" />
+			<tracking:meta-data key="name" value="#[payload.name]" />
+		</tracking:custom-event>
+		<logger level="INFO" doc:name="Logger" doc:id="24dc77d2-dc15-42c3-b823-e3ebd3abe50c" message="Request to send notification: #[payload]" />
+		<choice doc:name="decide on product name">
+			<when expression="#[payload.name == p('premium.product.name')]">
+				<logger level="INFO" doc:name="Log Premimum Product" message="Premium Product ABC Received"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Log Normal Product" message="Normal Product Received" />
+			</otherwise>
+		</choice>
 	</flow>
 </mule>

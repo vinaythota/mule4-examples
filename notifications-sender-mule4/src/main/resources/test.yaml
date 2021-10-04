@@ -1,2 +1,4 @@
 http:
   port: "8085"
+  
+premium.product.name: "ABC"

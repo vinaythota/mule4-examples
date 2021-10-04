@@ -9,7 +9,7 @@
         see them in the mule_ee.log file. -->
 
     <Appenders>
-        <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}notifications-receiver-mule4.log" 
+        <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}notifications-sender-mule4.log" 
                  filePattern="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}notifications-receiver-mule4-%i.log">
             <PatternLayout pattern="%-5p %d [%t] [event: %X{correlationId}] %c: %m%n" />
             <SizeBasedTriggeringPolicy size="10 MB" />
