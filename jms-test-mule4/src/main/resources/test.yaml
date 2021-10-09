@@ -1,0 +1,13 @@
+http:
+  port: "8085"
+  
+jms:
+  queueName: "testQ"
+  queueNameList: "testListQError"
+  
+sleepTimeInMillis: "30000"
+
+
+# testQ - to send single message into a Q
+# testListQ - to send list of messages into a Q
+# testListQError - to send list of message into a Q and error thrown on processing

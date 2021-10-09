@@ -1,45 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="41860a22-61be-4b23-8f7d-28e8e791a464" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="7a27efe9-ee63-4a86-8ef8-85625f463f8f" >
-		<jms:active-mq-connection username="admin" password="admin">
-      			<jms:factory-configuration brokerUrl="tcp://localhost:61616"
-                                 initialRedeliveryDelay="20000" redeliveryDelay="20000"  maxRedelivery="10"/>
-  		</jms:active-mq-connection>
-	</jms:config>
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+
+	
 	<flow name="jms-testFlow" doc:id="6ec475e2-9e21-433b-bf86-a7d38da45288" >
-		<http:listener doc:name="Listener" doc:id="2eefc251-b5e2-4b96-955c-b1bd3dc2e201" config-ref="HTTP_Listener_config" path="/jms"/>
-		<logger level="INFO" doc:name="Logger" doc:id="7b656db8-1bd2-4b5b-a295-834452f25d79" message="## Received Request to JMS Test ##"/>
-		<ee:transform doc:name="Transform Message" doc:id="757c8b80-c2d4-4568-be68-eaa96e36e668" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-	message : "test message"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<http:listener doc:name="Listener" doc:id="2eefc251-b5e2-4b96-955c-b1bd3dc2e201" config-ref="HTTP_Listener_config" path="/jms">
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="7b656db8-1bd2-4b5b-a295-834452f25d79" message="## Received Request to JMS Test: #[payload]"/>
 		<set-variable variableName="group" value="WM" />
-		<jms:publish doc:name="Publish" doc:id="fbc716b5-2055-4d65-ada5-c89d7a6220f9" config-ref="JMS_Config" destination="testQ">
+		<jms:publish doc:name="Publish" doc:id="fbc716b5-2055-4d65-ada5-c89d7a6220f9" config-ref="JMS_Config" destination="${jms.queueName}">
 			<jms:message >
 				<jms:properties ><![CDATA[#[{
 	groupName : vars.group
 }]]]></jms:properties>
 			</jms:message>
 		</jms:publish>
+		<logger level="INFO" doc:name="Logger" doc:id="82f2791f-b01b-4967-a0cc-816c4ca68083" message="test"/>
 	</flow>
 	
-	<flow name="jms-testFlow1" doc:id="376060c1-13da-42d3-959b-3885ffad100a" >
-		<jms:listener doc:name="Listener" doc:id="b4b66107-af59-452f-b392-dc112eb3738b" config-ref="JMS_Config" destination="testQ">
+	<flow name="jms-receiver" doc:id="376060c1-13da-42d3-959b-3885ffad100a" >
+		<jms:listener doc:name="Listener" doc:id="b4b66107-af59-452f-b392-dc112eb3738b" config-ref="JMS_Config" destination="${jms.queueName}">
 			<jms:consumer-type >
 				<jms:queue-consumer />
 			</jms:consumer-type>
@@ -50,5 +37,15 @@ output application/java
 		<logger level="INFO" doc:name="log group name" message="Grp Name from Variables #[vars.group]"/>
 		
 	</flow>
-
+	
+	
+	
+	
+	
+	<sub-flow name="wait-sub-flow" doc:id="3ed02606-e1dd-4ff3-9429-578acf5b2390">
+		<scripting:execute doc:name="Execute" doc:id="eff6c5c8-fd30-4aa2-8022-38b434fd0b50" engine="groovy">
+			<scripting:code><![CDATA[Thread.sleep(${sleepTimeInMillis});
+return payload;]]></scripting:code>
+		</scripting:execute>
+	</sub-flow>
 </mule>

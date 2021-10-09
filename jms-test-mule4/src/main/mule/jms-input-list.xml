@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+		<flow name="jms-testFlow-input-list" doc:id="0590f22e-e9d4-4877-a747-73ae35b230a7" >
+		<http:listener doc:name="Listener" doc:id="5c30c9ec-e240-494a-8c86-cc7810a47ef0" config-ref="HTTP_Listener_config" path="/jmsList"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7cd5df4e-3255-4ca8-a61f-249876d65e6f" message="## Received Request to JMS Test with List Input, #[payload] ##"/>
+		<foreach doc:name="For Each" doc:id="9cece75a-4662-43f0-a708-08a1f17666bc" collection="#[payload]">
+			<logger level="DEBUG" doc:name="Logger" doc:id="1d0689e7-b0df-4fcf-8ff9-87e2a5a45d03" message="Each Message: #[payload]"/>
+			<jms:publish doc:name="Publish" doc:id="583d3867-9871-438c-9854-ce3303185619" config-ref="JMS_Config" destination="${jms.queueNameList}">
+				<jms:message >
+					<jms:body ><![CDATA[#[output application/json
+---
+payload]]]></jms:body>
+				</jms:message>
+			</jms:publish>
+		</foreach>
+		<logger level="DEBUG" doc:name="Logger" doc:id="d7faeed4-5187-4ecb-96cf-b42eed53395b" message="Completed Publishing to JMS queue: #[payload]"/>
+	</flow>
+	
+	<flow name="jms-receiver-listQ" maxConcurrency="20">
+		<jms:listener destination="testListQ" config-ref="JMS_Config" numberOfConsumers="20" >
+			<jms:consumer-type>
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="4cce5a8b-1dac-49ca-8ff2-241bd635cd14" message="## Consumed a message from List Queue: #[payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="93359d3d-9e65-4fdf-ba47-cac66d3c37df" name="wait-sub-flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6b2ed6ff-1165-4a29-9dd4-31660ab5364a" message="Completed Processing: #[payload]"/>
+	</flow>
+
+</mule>

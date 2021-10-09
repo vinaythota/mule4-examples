@@ -1,2 +1,4 @@
 http:
-  port1: "9093"
+  port: "9093"
+  
+sleepTimeInMillis: "2000"

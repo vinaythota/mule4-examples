@@ -7,12 +7,14 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	
 	<sub-flow name="wait-sub-flow" doc:id="762b823d-91de-4270-9ece-d9f351dce498" >
 		<scripting:execute doc:name="Execute" doc:id="ab370337-0efe-40d0-9765-b3ec00944a15" engine="groovy">
-			<scripting:code>Thread.sleep(30000);
-return payload;</scripting:code>
+			<scripting:code><![CDATA[Thread.sleep(${sleepTimeInMillis});
+return payload;]]></scripting:code>
 		</scripting:execute>
 	</sub-flow>
+	
 	<flow name="vm-test-mule4-non-persistent" doc:id="ade31eb3-f526-4b98-a23f-c616f4a1cda3" >
 		<http:listener doc:name="Listener" doc:id="3b4003f6-794f-4dd9-aafd-2eb626c51d78" config-ref="HTTP_Listener_config" path="/vmNonPers"/>
 		<logger level="INFO" doc:name="Logger" doc:id="925e314d-a0d9-4179-be48-d89e57133e76" message="# Received a request for VM Non Persistent # Payload: #[payload]"/>
@@ -21,11 +23,11 @@ return payload;</scripting:code>
 		</foreach>
 	</flow>
 	
-	<flow name="vm-test-mule4-nonpersistent-listner" doc:id="3386d18d-5719-4979-bcbe-a2591ad8504e" maxConcurrency="1">
-		<vm:listener queueName="nonPerQ" doc:name="Listener" doc:id="0e34780f-b2b7-4bae-9ac3-e16606fa3302" config-ref="nonPers"/>
-		<logger level="INFO" doc:name="Logger" doc:id="ea49653a-18aa-4163-87de-e08a41ce2251" message="# Consumed Message from Non Persistent Queue, Payload: #[payload] #"/>
+	<flow name="vm-test-mule4-nonpersistent-listner" doc:id="3386d18d-5719-4979-bcbe-a2591ad8504e" >
+		<vm:listener queueName="nonPerQ" doc:name="Listener" doc:id="0e34780f-b2b7-4bae-9ac3-e16606fa3302" config-ref="nonPers" numberOfConsumers="1" transactionalAction="ALWAYS_BEGIN"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ea49653a-18aa-4163-87de-e08a41ce2251" message="# ONE Consumed Message from Non Persistent Queue, Payload: #[payload] #"/>
 		<flow-ref doc:name="wait-sub-flow" doc:id="f474e1aa-44c6-4115-a38c-95ee52bf1fc4" name="wait-sub-flow"/>
-		<logger level="INFO" doc:name="Logger" doc:id="f9f6114d-fd39-40a2-a99d-e4a8066c5aff" message="# Completed processing after consuming from non persisting queue: #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f9f6114d-fd39-40a2-a99d-e4a8066c5aff" message="# ONE Completed processing after consuming from non persisting queue: #[payload]"/>
 	</flow>
 	
 	<flow name="vm-test-mule4-persistent" doc:id="c3e64356-69af-41ab-b44a-4df2a521728f" >
