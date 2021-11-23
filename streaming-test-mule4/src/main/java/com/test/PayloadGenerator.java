@@ -13,7 +13,7 @@ public class PayloadGenerator {
 		
 		//generateXMLPayload("orders.xml", 2000000);
 		//generateXMLPayload("orders.xml", 5);
-		generateCSVPayload("orders.csv", 2000000);
+		generateCSVPayload("orders-1000.csv", 1000);
 		
 	}
 	
@@ -21,7 +21,7 @@ public class PayloadGenerator {
 		
 		System.out.println("Started Preparing CSV Payload");
 		
-		try (Writer writer = new BufferedWriter(new FileWriter(new File("orders.csv")));) {
+		try (Writer writer = new BufferedWriter(new FileWriter(new File(fileName)));) {
 
 			Random r1 = new Random();
 			writer.write("ID" + "," + "VALUE" + "\n");
