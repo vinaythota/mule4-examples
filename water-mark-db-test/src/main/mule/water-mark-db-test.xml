@@ -22,15 +22,16 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	
 <!-- 	<flow name="water-mark-db-testFlow1" doc:id="5ee99e68-02c7-4a24-bd6b-3d80d832ff77" initialState="${mysql.listnerInitialState}" maxConcurrency="1"> -->
 	
-	<flow name="water-mark-db-testFlow1" doc:id="4d25ac90-ffef-4922-a266-002c650a068e" initialState="${mysql.listnerInitialState}" maxConcurrency="1">
-		<db:listener table="account" doc:name="On Table Row" doc:id="4e100db2-3d94-4147-8a8b-dde851aca41a" config-ref="Database_Config" watermarkColumn="name" idColumn="id">
+	<flow name="water-mark-db-testFlow1" doc:id="4d25ac90-ffef-4922-a266-002c650a068e" initialState="${mysql.listnerInitialState}">
+<!-- 		<db:listener table="account" doc:name="On Table Row" doc:id="4e100db2-3d94-4147-8a8b-dde851aca41a" config-ref="Database_Config" watermarkColumn="name">
+ -->		<db:listener table="employee" doc:name="On Table Row" doc:id="d14f499b-dc37-460b-9fbb-81005a9ad36d" config-ref="Database_Config" watermarkColumn="id">
 			<scheduling-strategy >
 				<fixed-frequency frequency="${mysql.pollingFrequencyInSeconds}" timeUnit="SECONDS" />
 			</scheduling-strategy>
 		</db:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="72bf50a7-1d1b-4af8-9ad4-436110d18962" message="database listner next record: #[payload]" category="com.vinay.db.listner"/>
-<!-- 		<raise-error doc:name="Raise error" doc:id="a7a4c90a-aa89-4371-b8a8-acfe0b484c50" type="APP:CUSTOM_ERROR" description="error to test water mark"/> -->		<scripting:execute engine="groovy" doc:name="sleep" doc:id="39325a29-2688-4c04-83ce-2915c8145e37" >
-			<scripting:code >Thread.sleep(${mysql.listnerRecordProcessingTimeSeconds} * 1000);</scripting:code>
+<!-- 		<raise-error doc:name="Raise error" doc:id="a7a4c90a-aa89-4371-b8a8-acfe0b484c50" type="APP:CUSTOM_ERROR" description="error to test water mark"/> -->		<scripting:execute engine="groovy" doc:name="sleep" doc:id="39325a29-2688-4c04-83ce-2915c8145e37" target="test">
+			<scripting:code ><![CDATA[Thread.sleep(${mysql.listnerRecordProcessingTimeSeconds} * 1000);]]></scripting:code>
 		</scripting:execute>
 		<logger level="INFO" doc:name="Logger" doc:id="0f4a8fb1-3065-44e6-94cb-ca8e5ff9dc98" message="database listner record: #[payload] processing completed" category="com.vinay.db.listner"/>
 	</flow>

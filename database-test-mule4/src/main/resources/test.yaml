@@ -1,6 +1,6 @@
 mysql:
   host: "localhost"
-  port: "3308"
+  port: "3306"
   user: "test"
   password: "test123"
   database: "test"
@@ -9,4 +9,8 @@ query:
   fetchSize: "1"
   maxRows: "-1"
   
-schdulerFrequencyInSeconds: "60"
+schdulerFrequencyInSeconds: "6000"
+
+http:
+  host: "0.0.0.0"
+  port: "8085"

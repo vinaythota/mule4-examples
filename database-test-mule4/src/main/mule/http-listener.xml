@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="http-listenerFlow" doc:id="8832cc15-cabe-4482-a093-db279546426f" >
+		<http:listener doc:name="Listener" doc:id="eed9c787-361b-4c16-92a8-cfb2c250b96e"  config-ref="httpListner" path="/dbTest" />
+		<db:select config-ref="Database_Config_MySQL" >
+			<db:sql><![CDATA[select * from employee;]]></db:sql>
+		</db:select>
+		<foreach doc:name="For Each" doc:id="8258ef92-9422-4f2d-85ac-445f7691fa0f" >
+			<logger level="INFO" doc:name="Logger" doc:id="dfbd9140-786b-4016-b39e-75399dc80251" message="Response: #[payload]" />
+		</foreach>
+		<ee:transform doc:name="Transform Message" doc:id="45fe9a44-2c76-4674-ab11-d3cbdb45c64f">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+	</flow>
+</mule>

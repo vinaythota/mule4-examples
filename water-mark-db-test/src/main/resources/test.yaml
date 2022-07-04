@@ -4,9 +4,9 @@ mysql:
   user: "test"
   password: "test123"
   database: "test"
-  pollingFrequencyInSeconds: "30"
+  pollingFrequencyInSeconds: "10"
   listnerInitialState: "started"
-  listnerRecordProcessingTimeSeconds: "120"
+  listnerRecordProcessingTimeSeconds: "15"
   
 scheduler:
   frequencyInSeconds: "30"
