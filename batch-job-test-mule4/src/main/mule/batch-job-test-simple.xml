@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="batch-job-test-flow" initialState="${simpleTest.initialState}">
+		<scheduler doc:name="simpleTestScheduler">
+			<scheduling-strategy>
+				<fixed-frequency frequency="${schdulerFrequencyInSeconds}" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" message="Simple Batch Job Test Started"/>
+		<set-payload value="#[['a','b','c','d','e']]"/>
+		<batch:job jobName="simpleBatchJob">
+			<batch:process-records>
+				
+				<batch:step name="step1" acceptExpression="#[not (payload contains 'b')]">
+					<ee:transform doc:name="Transform Message" doc:id="1bf979d9-dd95-4ef8-a96f-8374adb14e88" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+upper(payload)]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="fc839a81-b2fb-4808-a348-83cf4f6f8bdf" size="3">
+						<logger level="INFO" doc:name="Logger" doc:id="89e049f5-d10a-4cff-a5a1-ae28141412e1" message="#[output application/json --- payload]"/>
+					</batch:aggregator>
+
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+	
+</mule>
+

@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<flow name="batch-job-test-usingAggregator" doc:id="14d9f93f-9a09-4913-bf1b-6a264dae9db9" initialState="${aggregatorTest.initialState}" >
 		<db:listener doc:name="On Table Row" doc:id="185e0da6-5ff4-45b0-9aa8-324e991cf2c8" config-ref="Database_Config_MySQL" table="employee" watermarkColumn="id">
 			<scheduling-strategy >
-				<fixed-frequency frequency="1" timeUnit="DAYS" startDelay="1"/>
+				<fixed-frequency frequency="${schdulerFrequencyInSeconds}" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</db:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="c1a8c2e2-9e21-4e6c-80f5-69cdf5eb6aa9" message="## Received Payload: #[payload] ##"/>

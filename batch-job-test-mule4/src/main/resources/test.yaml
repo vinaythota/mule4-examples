@@ -13,4 +13,5 @@ schdulerFrequencyInSeconds: "30"
 
 mainTest.initialState: "stopped"
 aggregatorTest.initialState: "stopped"
-waitUntilFinishTest.initialState: "started"
+waitUntilFinishTest.initialState: "stopped"
+simpleTest.initialState: "started"

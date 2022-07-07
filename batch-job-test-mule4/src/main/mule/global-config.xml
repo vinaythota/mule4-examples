@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			password="${mysql.password}" 
 			database="${mysql.database}">
 			<reconnection failsDeployment="false">
-				<reconnect count="3" />
+				<reconnect count="1" />
 			</reconnection>
 		</db:my-sql-connection>
 	</db:config>

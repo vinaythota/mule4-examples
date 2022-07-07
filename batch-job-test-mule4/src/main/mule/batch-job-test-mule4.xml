@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 	<flow name="batch-job-test-mule4Flow" doc:id="d418d7cd-7b88-41b0-997f-0d06ed8eafb9"  maxConcurrency="1" initialState="${mainTest.initialState}">
 		<scheduler doc:name="Scheduler" doc:id="7f74be09-426c-4ef1-bdbe-327ea31b092d" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
+				<fixed-frequency frequency="${schdulerFrequencyInSeconds}" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
 		<logger level="INFO" doc:name="Logger" doc:id="3f895bc9-c58b-45b9-9231-3d8ec462acc7" message="RECEIVED AN EVENT"/>
