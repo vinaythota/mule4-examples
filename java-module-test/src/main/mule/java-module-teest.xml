@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+	<flow name="java-module-test-dw-flow">
+		<http:listener path="/javaTestDW" config-ref="httpListner" />
+		<logger level="INFO" message="Received Request for Java Test - DW"/>
+		<ee:transform doc:name="calculate sum" doc:id="a75438da-a491-4bf6-b84c-e7863014201b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import java!com::vinay::internal::Add
+---
+{
+	sum: Add::add(attributes.queryParams.num1 as Number,
+		attributes.queryParams.num1 as Number
+	)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>	
+	
+	<flow name="java-module-test-module-flow">
+		<http:listener path="/javaTestModule" config-ref="httpListner" />
+		<logger level="INFO" message="Received Request for Java Test - Module"/>
+		<java:new doc:name="New - Calculator Instance" doc:id="452b3523-a49d-4156-b033-496ab35bb922" class="com.vinay.Calculator" constructor="Calculator()" target="calcInstance"/>
+		<java:invoke method="runOperation(long,long,int)" doc:name="Invoke - runOperation" doc:id="70f5c8d7-392c-4f82-ae37-a2899d5646f7" class="com.vinay.Calculator" instance="#[vars.calcInstance]" target="sum">
+			<java:args ><![CDATA[#[{
+	arg0: attributes.queryParams.num1 as Number,
+	arg1: attributes.queryParams.num2 as Number,
+	arg2: 1
+}]]]></java:args>
+		</java:invoke>
+		<ee:transform doc:name="json response" doc:id="f95c7dca-7faa-4a21-ba75-b7af5fc22ecb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	sum: vars.sum
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</flow>
+</mule>
